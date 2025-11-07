@@ -26,8 +26,13 @@ import {
     SheetTrigger,
 } from '@/components/ui/sheet';
 import {ModeToggle} from './mode-toggle';
+import {Link} from 'react-router';
 
 export default function Navbar() {
+    const navLinks = [
+        {href: '/', label: 'Home', role: 'PUBLIC'},
+        {href: '/about', label: 'About', role: 'PUBLIC'},
+    ];
     const features = [
         {
             title: 'Dashboard',
@@ -44,21 +49,6 @@ export default function Navbar() {
             description: 'Configure your preferences',
             href: '#',
         },
-        {
-            title: 'Integrations',
-            description: 'Connect with other tools',
-            href: '#',
-        },
-        {
-            title: 'Storage',
-            description: 'Manage your files',
-            href: '#',
-        },
-        {
-            title: 'Support',
-            description: 'Get help when needed',
-            href: '#',
-        },
     ];
 
     return (
@@ -71,11 +61,12 @@ export default function Navbar() {
                     >
                         <Logo />
                         <span className='text-lg font-semibold tracking-tighter'>
-                            Shadcnblocks.com
+                            Rydora
                         </span>
                     </a>
                     <NavigationMenu className='hidden lg:block'>
                         <NavigationMenuList>
+                            {/* Features */}
                             <NavigationMenuItem>
                                 <NavigationMenuTrigger>
                                     Features
@@ -101,36 +92,27 @@ export default function Navbar() {
                                     </div>
                                 </NavigationMenuContent>
                             </NavigationMenuItem>
-                            <NavigationMenuItem>
-                                <NavigationMenuLink
-                                    href='#'
-                                    className={navigationMenuTriggerStyle()}
-                                >
-                                    Products
-                                </NavigationMenuLink>
-                            </NavigationMenuItem>
-                            <NavigationMenuItem>
-                                <NavigationMenuLink
-                                    href='#'
-                                    className={navigationMenuTriggerStyle()}
-                                >
-                                    Resources
-                                </NavigationMenuLink>
-                            </NavigationMenuItem>
-                            <NavigationMenuItem>
-                                <NavigationMenuLink
-                                    href='#'
-                                    className={navigationMenuTriggerStyle()}
-                                >
-                                    Contact
-                                </NavigationMenuLink>
-                            </NavigationMenuItem>
+
+                            {navLinks.map((item) => (
+                                <NavigationMenuItem key={item.href}>
+                                    <NavigationMenuLink
+                                        asChild
+                                        className={navigationMenuTriggerStyle()}
+                                    >
+                                        <Link to={item.href}>{item.label}</Link>
+                                    </NavigationMenuLink>
+                                </NavigationMenuItem>
+                            ))}
                         </NavigationMenuList>
                     </NavigationMenu>
                     <div className='hidden items-center gap-4 lg:flex'>
                         <ModeToggle />
-                        <Button variant='outline'>Sign in</Button>
-                        <Button>Start for free</Button>
+                        <Button variant='outline'>
+                            <Link to='/login'>Login</Link>
+                        </Button>
+                        <Button>
+                            <Link to='/registration'>Register</Link>
+                        </Button>
                     </div>
                     <Sheet>
                         <SheetTrigger asChild className='lg:hidden'>
@@ -148,13 +130,9 @@ export default function Navbar() {
                                         href='https://www.shadcnblocks.com'
                                         className='flex items-center gap-2'
                                     >
-                                        <img
-                                            src='https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/shadcnblockscom-icon.svg'
-                                            className='max-h-8'
-                                            alt='Shadcn UI Navbar'
-                                        />
+                                        <Logo />
                                         <span className='text-lg font-semibold tracking-tighter'>
-                                            Shadcnblocks.com
+                                            Rydora
                                         </span>
                                     </a>
                                 </SheetTitle>
@@ -218,7 +196,7 @@ export default function Navbar() {
                                 <div className='mt-6 flex flex-col gap-4'>
                                     <ModeToggle />
                                     <Button variant='outline'>Login</Button>
-                                    <Button>Start for free</Button>
+                                    <Button>Register</Button>
                                 </div>
                             </div>
                         </SheetContent>
