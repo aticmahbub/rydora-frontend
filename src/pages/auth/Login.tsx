@@ -1,5 +1,6 @@
 import Logo from '@/assets/icons/Logo';
 import {LoginForm} from '@/components/modules/auth/login/LoginForm';
+import loginImage from '../../assets/images/login-image.png';
 
 export default function LoginPage() {
     return (
@@ -21,8 +22,8 @@ export default function LoginPage() {
             </div>
             <div className='bg-muted relative hidden lg:block'>
                 <img
-                    src='/placeholder.svg'
-                    alt='Image'
+                    src={loginImage}
+                    alt='loginImage'
                     className='absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale'
                 />
             </div>

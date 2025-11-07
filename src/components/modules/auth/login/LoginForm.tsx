@@ -5,12 +5,38 @@ import {
     FieldDescription,
     FieldGroup,
     FieldLabel,
+    FieldSeparator,
 } from '@/components/ui/field';
 import {Input} from '@/components/ui/input';
 
+import z from 'zod';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {Controller, useForm} from 'react-hook-form';
+import {Link} from 'react-router';
+
+const loginFormSchema = z.object({
+    email: z.email(),
+    password: z.string(),
+});
+
 export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
+    const form = useForm<z.infer<typeof loginFormSchema>>({
+        resolver: zodResolver(loginFormSchema),
+        defaultValues: {
+            email: '',
+            password: '',
+        },
+    });
+
+    const onSubmit = (data: z.infer<typeof loginFormSchema>) => {};
+
     return (
-        <form className={cn('flex flex-col gap-6', className)} {...props}>
+        <form
+            id='login-form'
+            onSubmit={form.handleSubmit(onSubmit)}
+            className={cn('flex flex-col gap-6', className)}
+            {...props}
+        >
             <FieldGroup>
                 <div className='flex flex-col items-center gap-1 text-center'>
                     <h1 className='text-2xl font-bold'>
@@ -20,34 +46,55 @@ export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
                         Enter your email below to login to your account
                     </p>
                 </div>
-                <Field>
-                    <FieldLabel htmlFor='email'>Email</FieldLabel>
-                    <Input
-                        id='email'
-                        type='email'
-                        placeholder='john@example.com'
-                        required
-                    />
-                </Field>
-                <Field>
-                    <div className='flex items-center'>
-                        <FieldLabel htmlFor='password'>Password</FieldLabel>
-                        <a
-                            href='#'
-                            className='ml-auto text-sm underline-offset-4 hover:underline'
-                        >
-                            Forgot your password?
-                        </a>
-                    </div>
-                    <Input id='password' type='password' required />
-                </Field>
-                <Field>
-                    <Button type='submit'>Login</Button>
-                </Field>
-                {/* <FieldSeparator>Or continue with</FieldSeparator> */}
+                <Controller
+                    name='email'
+                    control={form.control}
+                    render={({field}) => (
+                        <Field>
+                            <FieldLabel htmlFor='email'>Email</FieldLabel>
+                            <Input
+                                {...field}
+                                placeholder='john@example.com'
+                                required
+                            />
+                        </Field>
+                    )}
+                />
+
+                <Controller
+                    name='password'
+                    control={form.control}
+                    render={({field}) => (
+                        <Field>
+                            <div className='flex items-center'>
+                                <FieldLabel htmlFor='password'>
+                                    Password
+                                </FieldLabel>
+                                <a
+                                    href='#'
+                                    className='ml-auto text-sm underline-offset-4 hover:underline'
+                                >
+                                    Forgot your password?
+                                </a>
+                            </div>
+                            <Input
+                                {...field}
+                                id='password'
+                                type='password'
+                                placeholder='********'
+                                required
+                            />
+                        </Field>
+                    )}
+                />
+
+                <Button form='login-form' type='submit'>
+                    Login
+                </Button>
+                <FieldSeparator>Or continue with</FieldSeparator>
                 <Field>
                     {/* github login */}
-                    {/* <Button variant='outline' type='button'>
+                    <Button variant='outline' type='button'>
                         <svg
                             xmlns='http://www.w3.org/2000/svg'
                             viewBox='0 0 24 24'
@@ -58,12 +105,15 @@ export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
                             />
                         </svg>
                         Login with GitHub
-                    </Button> */}
+                    </Button>
                     <FieldDescription className='text-center'>
                         Don&apos;t have an account?{' '}
-                        <a href='#' className='underline underline-offset-4'>
+                        <Link
+                            to='/registration'
+                            className='underline underline-offset-4'
+                        >
                             Sign up
-                        </a>
+                        </Link>
                     </FieldDescription>
                 </Field>
             </FieldGroup>
