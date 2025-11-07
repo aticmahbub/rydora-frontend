@@ -13,42 +13,36 @@ import z from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {Controller, useForm} from 'react-hook-form';
 import {Link} from 'react-router';
+import Password from '@/components/ui/password-strength-indicator';
 
-const registrationFormSchema = z.object({
-    name: z
-        .string()
-        .min(2, {error: 'Name must be at least 2 characters long'})
-        .max(20, {error: 'Name cannot exceed 20 characters'})
-        .optional(),
-    email: z.email({error: 'Invalid email'}),
-    NID: z.string(),
-    password: z
-        .string({error: 'Password must be string'})
-        .min(8, {error: 'Password must be at least 8 characters long'})
-        .max(20, {error: 'Password can not exceed 20 characters'})
-        .regex(/^(?=.*[A-Z])/, {
-            error: 'Password must contain at least 1 uppercase letter',
-        })
-        .regex(/^(?=.*[!@#$%^&*])/, {
-            error: 'Password must contain at least one special character',
-        })
-        .regex(/^(?=.*\d)/, {
-            error: 'Password must contain at least one number',
-        }),
-    confirmPassword: z
-        .string({error: 'Password must be string'})
-        .min(8, {error: 'Password must be at least 8 characters long'})
-        .max(20, {error: 'Password can not exceed 20 characters'})
-        .regex(/^(?=.*[A-Z])/, {
-            error: 'Password must contain at least 1 uppercase letter',
-        })
-        .regex(/^(?=.*[!@#$%^&*])/, {
-            error: 'Password must contain at least one special character',
-        })
-        .regex(/^(?=.*\d)/, {
-            error: 'Password must contain at least one number',
-        }),
-});
+const registrationFormSchema = z
+    .object({
+        name: z
+            .string()
+            .min(2, {error: 'Name must be at least 2 characters long'})
+            .max(20, {error: 'Name cannot exceed 20 characters'})
+            .optional(),
+        email: z.email({error: 'Invalid email'}),
+        NID: z.string(),
+        password: z
+            .string({error: 'Password must be string'})
+            .min(8, {error: 'Password must be at least 8 characters long'})
+            .max(20, {error: 'Password can not exceed 20 characters'})
+            .regex(/^(?=.*[A-Z])/, {
+                error: 'Password must contain at least 1 uppercase letter',
+            })
+            .regex(/^(?=.*[!@#$%^&*])/, {
+                error: 'Password must contain at least one special character',
+            })
+            .regex(/^(?=.*\d)/, {
+                error: 'Password must contain at least one number',
+            }),
+        confirmPassword: z.string(),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+        message: 'Passwords do not match',
+        path: ['confirmPassword'],
+    });
 
 export function RegistrationForm({
     className,
@@ -139,21 +133,7 @@ export function RegistrationForm({
                     control={form.control}
                     render={({field}) => (
                         <Field>
-                            <div className='flex items-center'>
-                                <FieldLabel htmlFor='password'>
-                                    Password
-                                </FieldLabel>
-                            </div>
-                            <Input
-                                {...field}
-                                id='password'
-                                type='password'
-                                placeholder='********'
-                                required
-                            />
-                            <FieldDescription className='text-red-500'>
-                                {form.formState.errors.password?.message}
-                            </FieldDescription>
+                            <Password {...field} />
                         </Field>
                     )}
                 />
@@ -170,7 +150,7 @@ export function RegistrationForm({
                             <Input
                                 {...field}
                                 id='confirmPassword'
-                                type='confirmPassword'
+                                type='password'
                                 placeholder='********'
                                 required
                             />
@@ -213,3 +193,21 @@ export function RegistrationForm({
         </form>
     );
 }
+
+// <Field>
+//     <div className='flex items-center'>
+//         <FieldLabel htmlFor='password'>
+//             Password
+//         </FieldLabel>
+//     </div>
+//     <Input
+//         {...field}
+//         id='password'
+//         type='password'
+//         placeholder='********'
+//         required
+//     />
+//     <FieldDescription className='text-red-500'>
+//         {form.formState.errors.password?.message}
+//     </FieldDescription>
+// </Field>
