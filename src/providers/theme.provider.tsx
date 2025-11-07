@@ -1,7 +1,7 @@
 import {
     ThemeProviderContext,
     type Theme,
-} from '@/contexts/theme-provider-context';
+} from '@/contexts/theme.provider.context';
 import {useEffect, useState} from 'react';
 
 type ThemeProviderProps = {
