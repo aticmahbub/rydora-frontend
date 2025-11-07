@@ -14,9 +14,28 @@ import {zodResolver} from '@hookform/resolvers/zod';
 import {Controller, useForm} from 'react-hook-form';
 import {Link} from 'react-router';
 
-const loginFormSchema = z.object({
+const registrationFormSchema = z.object({
+    name: z
+        .string()
+        .min(2, {error: 'Name must be at least 2 characters long'})
+        .max(20, {error: 'Name cannot exceed 20 characters'})
+        .optional(),
     email: z.email({error: 'Invalid email'}),
+    NID: z.string(),
     password: z
+        .string({error: 'Password must be string'})
+        .min(8, {error: 'Password must be at least 8 characters long'})
+        .max(20, {error: 'Password can not exceed 20 characters'})
+        .regex(/^(?=.*[A-Z])/, {
+            error: 'Password must contain at least 1 uppercase letter',
+        })
+        .regex(/^(?=.*[!@#$%^&*])/, {
+            error: 'Password must contain at least one special character',
+        })
+        .regex(/^(?=.*\d)/, {
+            error: 'Password must contain at least one number',
+        }),
+    confirmPassword: z
         .string({error: 'Password must be string'})
         .min(8, {error: 'Password must be at least 8 characters long'})
         .max(20, {error: 'Password can not exceed 20 characters'})
@@ -31,36 +50,54 @@ const loginFormSchema = z.object({
         }),
 });
 
-export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
-    const form = useForm<z.infer<typeof loginFormSchema>>({
-        resolver: zodResolver(loginFormSchema),
+export function RegistrationForm({
+    className,
+    ...props
+}: React.ComponentProps<'form'>) {
+    const form = useForm<z.infer<typeof registrationFormSchema>>({
+        resolver: zodResolver(registrationFormSchema),
         defaultValues: {
+            name: '',
             email: '',
+            NID: '',
             password: '',
+            confirmPassword: '',
         },
     });
 
-    const onSubmit = (data: z.infer<typeof loginFormSchema>) => {
+    const onSubmit = (data: z.infer<typeof registrationFormSchema>) => {
         console.log(data);
     };
 
     return (
         <form
-            id='login-form'
+            id='registration-form'
             onSubmit={form.handleSubmit(onSubmit)}
             className={cn('flex flex-col gap-6', className)}
             {...props}
         >
             <FieldGroup>
                 <div className='flex flex-col items-center gap-1 text-center'>
-                    <h1 className='text-2xl font-bold'>
-                        Welcome back to Rydora
-                    </h1>
+                    <h1 className='text-2xl font-bold'>Join Rydora</h1>
                     <p className='text-muted-foreground text-sm text-balance'>
-                        Sign in to book rides, track progress, or manage your
-                        account.
+                        Create an account to start booking or driving with ease.
                     </p>
                 </div>
+
+                <Controller
+                    name='name'
+                    control={form.control}
+                    render={({field}) => (
+                        <Field>
+                            <FieldLabel htmlFor='name'>Name</FieldLabel>
+                            <Input {...field} placeholder='John Doe' required />
+                            <FieldDescription className='text-red-500'>
+                                {form.formState.errors.name?.message}
+                            </FieldDescription>
+                        </Field>
+                    )}
+                />
+
                 <Controller
                     name='email'
                     control={form.control}
@@ -80,6 +117,24 @@ export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
                 />
 
                 <Controller
+                    name='NID'
+                    control={form.control}
+                    render={({field}) => (
+                        <Field>
+                            <FieldLabel htmlFor='NID'>NID</FieldLabel>
+                            <Input
+                                {...field}
+                                placeholder='1234567890'
+                                required
+                            />
+                            <FieldDescription className='text-red-500'>
+                                {form.formState.errors.NID?.message}
+                            </FieldDescription>
+                        </Field>
+                    )}
+                />
+
+                <Controller
                     name='password'
                     control={form.control}
                     render={({field}) => (
@@ -88,12 +143,6 @@ export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
                                 <FieldLabel htmlFor='password'>
                                     Password
                                 </FieldLabel>
-                                <a
-                                    href='#'
-                                    className='ml-auto text-sm underline-offset-4 hover:underline'
-                                >
-                                    Forgot your password?
-                                </a>
                             </div>
                             <Input
                                 {...field}
@@ -108,9 +157,32 @@ export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
                         </Field>
                     )}
                 />
+                <Controller
+                    name='confirmPassword'
+                    control={form.control}
+                    render={({field}) => (
+                        <Field>
+                            <div className='flex items-center'>
+                                <FieldLabel htmlFor='confirmPassword'>
+                                    Confirm Password
+                                </FieldLabel>
+                            </div>
+                            <Input
+                                {...field}
+                                id='confirmPassword'
+                                type='confirmPassword'
+                                placeholder='********'
+                                required
+                            />
+                            <FieldDescription className='text-red-500'>
+                                {form.formState.errors.confirmPassword?.message}
+                            </FieldDescription>
+                        </Field>
+                    )}
+                />
 
-                <Button form='login-form' type='submit'>
-                    Login
+                <Button form='registration-form' type='submit'>
+                    Register
                 </Button>
                 <FieldSeparator>Or continue with</FieldSeparator>
                 <Field>
@@ -128,12 +200,12 @@ export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
                         Login with GitHub
                     </Button>
                     <FieldDescription className='text-center'>
-                        Don&apos;t have an account?{' '}
+                        Already have an account?{' '}
                         <Link
-                            to='/registration'
-                            className='underline underline-offset-4'
+                            to='/login'
+                            className='ml-auto text-sm underline-offset-4 hover:underline'
                         >
-                            Sign up
+                            Login
                         </Link>
                     </FieldDescription>
                 </Field>

@@ -3,8 +3,9 @@ import AdminLayout from '@/layouts/AdminLayout';
 import DriverLayout from '@/layouts/DriverLayout';
 import RiderLayout from '@/layouts/RiderLayout';
 import About from '@/pages/About';
-import Login from '@/pages/auth/Login';
-import Registration from '@/pages/auth/Registration';
+import LoginPage from '@/pages/auth/LoginPage';
+import RegistrationPage from '@/pages/auth/RegistrationPage';
+
 import {createBrowserRouter} from 'react-router';
 
 export const router = createBrowserRouter([
@@ -14,8 +15,8 @@ export const router = createBrowserRouter([
         children: [{path: 'about', Component: About}],
     },
 
-    {path: 'login', Component: Login},
-    {path: '/registration', Component: Registration},
+    {path: 'login', Component: LoginPage},
+    {path: '/registration', Component: RegistrationPage},
 
     {path: 'admin', Component: AdminLayout},
     {path: 'rider', Component: RiderLayout},
