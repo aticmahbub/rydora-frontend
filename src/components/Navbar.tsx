@@ -25,6 +25,7 @@ import {
     SheetTitle,
     SheetTrigger,
 } from '@/components/ui/sheet';
+import {ModeToggle} from './mode-toggle';
 
 export default function Navbar() {
     const features = [
@@ -127,6 +128,7 @@ export default function Navbar() {
                         </NavigationMenuList>
                     </NavigationMenu>
                     <div className='hidden items-center gap-4 lg:flex'>
+                        <ModeToggle />
                         <Button variant='outline'>Sign in</Button>
                         <Button>Start for free</Button>
                     </div>
@@ -214,7 +216,8 @@ export default function Navbar() {
                                     </a>
                                 </div>
                                 <div className='mt-6 flex flex-col gap-4'>
-                                    <Button variant='outline'>Sign in</Button>
+                                    <ModeToggle />
+                                    <Button variant='outline'>Login</Button>
                                     <Button>Start for free</Button>
                                 </div>
                             </div>
