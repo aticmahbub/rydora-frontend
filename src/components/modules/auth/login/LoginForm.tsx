@@ -13,6 +13,7 @@ import z from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {Controller, useForm} from 'react-hook-form';
 import {Link} from 'react-router';
+import {useLoginMutation} from '@/redux/features/auth/auth.api';
 
 const loginFormSchema = z.object({
     email: z.email({error: 'Invalid email'}),
@@ -23,6 +24,7 @@ const loginFormSchema = z.object({
 });
 
 export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
+    const [login] = useLoginMutation();
     const form = useForm<z.infer<typeof loginFormSchema>>({
         resolver: zodResolver(loginFormSchema),
         defaultValues: {
@@ -32,8 +34,8 @@ export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
     });
 
     const onSubmit = async (data: z.infer<typeof loginFormSchema>) => {
-        // const res = await login(data);
-        console.log(data);
+        const res = await login(data);
+        console.log(res);
     };
 
     return (

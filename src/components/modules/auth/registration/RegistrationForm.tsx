@@ -14,41 +14,48 @@ import {zodResolver} from '@hookform/resolvers/zod';
 import {Controller, useForm} from 'react-hook-form';
 import {Link} from 'react-router';
 import Password from '@/components/ui/password-strength-indicator';
+import {Checkbox} from '@/components/ui/checkbox';
+import {useRegisterMutation} from '@/redux/features/auth/auth.api';
 
 const registrationFormSchema = z
     .object({
         name: z
             .string()
-            .min(2, {error: 'Name must be at least 2 characters long'})
-            .max(20, {error: 'Name cannot exceed 20 characters'})
+            .min(2, {message: 'Name must be at least 2 characters long'})
+            .max(20, {message: 'Name cannot exceed 20 characters'})
             .optional(),
-        email: z.email({error: 'Invalid email'}),
-        NID: z.string(),
+        email: z.string().email({message: 'Invalid email'}),
+        NID: z.coerce
+            .number()
+            .min(1, {message: 'NID is required and must be a valid number'}),
         password: z
-            .string({error: 'Password must be string'})
-            .min(8, {error: 'Password must be at least 8 characters long'})
-            .max(20, {error: 'Password can not exceed 20 characters'})
+            .string()
+            .min(8, {message: 'Password must be at least 8 characters long'})
+            .max(20, {message: 'Password cannot exceed 20 characters'})
             .regex(/^(?=.*[A-Z])/, {
-                error: 'Password must contain at least 1 uppercase letter',
+                message: 'Must contain at least 1 uppercase letter',
             })
             .regex(/^(?=.*[!@#$%^&*])/, {
-                error: 'Password must contain at least one special character',
+                message: 'Must contain at least one special character',
             })
-            .regex(/^(?=.*\d)/, {
-                error: 'Password must contain at least one number',
-            }),
+            .regex(/^(?=.*\d)/, {message: 'Must contain at least one number'}),
         confirmPassword: z.string(),
+        isDriver: z.boolean(),
     })
     .refine((data) => data.password === data.confirmPassword, {
         message: 'Passwords do not match',
         path: ['confirmPassword'],
     });
 
+type FormValues = z.input<typeof registrationFormSchema>;
+
 export function RegistrationForm({
     className,
     ...props
 }: React.ComponentProps<'form'>) {
-    const form = useForm<z.infer<typeof registrationFormSchema>>({
+    const [register] = useRegisterMutation();
+
+    const form = useForm<FormValues>({
         resolver: zodResolver(registrationFormSchema),
         defaultValues: {
             name: '',
@@ -56,11 +63,24 @@ export function RegistrationForm({
             NID: '',
             password: '',
             confirmPassword: '',
+            isDriver: false,
         },
     });
+    const isDriver = form.watch('isDriver');
+    console.log(isDriver);
 
-    const onSubmit = (data: z.infer<typeof registrationFormSchema>) => {
-        console.log(data);
+    const onSubmit = async (data: FormValues) => {
+        const userInfo = {
+            name: data.name,
+            email: data.email,
+            NID: data.NID,
+            password: data.password,
+            confirmPassword: data.confirmPassword,
+            isDriver: data.isDriver,
+        };
+        console.log(userInfo);
+        const res = await register(userInfo).unwrap();
+        console.log(res);
     };
 
     return (
@@ -118,6 +138,7 @@ export function RegistrationForm({
                             <FieldLabel htmlFor='NID'>NID</FieldLabel>
                             <Input
                                 {...field}
+                                value={field.value as string}
                                 placeholder='1234567890'
                                 required
                             />
@@ -161,6 +182,26 @@ export function RegistrationForm({
                     )}
                 />
 
+                <Controller
+                    name='isDriver'
+                    control={form.control}
+                    render={({field}) => (
+                        <Field>
+                            <FieldLabel htmlFor='email'>
+                                Create account as a driver
+                            </FieldLabel>
+
+                            <Checkbox
+                                id='isDriver'
+                                checked={field.value}
+                                className='w-2'
+                                onCheckedChange={(checked) =>
+                                    field.onChange(checked === true)
+                                }
+                            />
+                        </Field>
+                    )}
+                />
                 <Button form='registration-form' type='submit'>
                     Register
                 </Button>
