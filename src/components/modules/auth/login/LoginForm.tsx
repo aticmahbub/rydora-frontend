@@ -12,21 +12,15 @@ import {Input} from '@/components/ui/input';
 import z from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {Controller, useForm} from 'react-hook-form';
-import {Link} from 'react-router';
+import {Link, useNavigate} from 'react-router';
 import {useLoginMutation} from '@/redux/features/auth/auth.api';
-import {Spinner} from '@/components/ui/Spinner';
 import {toast} from 'sonner';
-
-const loginFormSchema = z.object({
-    email: z.email({error: 'Invalid email'}),
-    password: z
-        .string({error: 'Password must be string'})
-        .min(8, {error: 'Password must be at least 8 characters long'})
-        .max(20, {error: 'Password can not exceed 20 characters'}),
-});
+import {loginFormSchema} from './loginFormSchema';
 
 export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
+    const navigate = useNavigate();
     const [login] = useLoginMutation();
+
     const form = useForm<z.infer<typeof loginFormSchema>>({
         resolver: zodResolver(loginFormSchema),
         defaultValues: {
@@ -36,9 +30,22 @@ export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
     });
 
     const onSubmit = async (data: z.infer<typeof loginFormSchema>) => {
-        const res = await login(data);
-        toast.success('test');
-        console.log(res);
+        const toastId = toast.loading('Logging in to your account');
+
+        try {
+            const res = await login(data).unwrap();
+            if (res.success) {
+                toast.success('Logged in to your account', {id: toastId});
+                navigate('/dashboard');
+            } else {
+                toast.error('Failed to logged in to your account', {
+                    id: toastId,
+                });
+            }
+        } catch (error) {
+            toast.error('Failed to logged in to your account', {id: toastId});
+            console.log(error);
+        }
     };
 
     return (
@@ -107,7 +114,6 @@ export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
                 />
                 <Button form='login-form' type='submit'>
                     Login
-                    <Spinner />
                 </Button>
                 <FieldSeparator>Or continue with</FieldSeparator>
                 <Field>

@@ -8,54 +8,24 @@ import {
     FieldSeparator,
 } from '@/components/ui/field';
 import {Input} from '@/components/ui/input';
-
 import z from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {Controller, useForm} from 'react-hook-form';
-import {Link} from 'react-router';
+import {Link, useNavigate} from 'react-router';
 import Password from '@/components/ui/password-strength-indicator';
 import {Checkbox} from '@/components/ui/checkbox';
 import {useRegisterMutation} from '@/redux/features/auth/auth.api';
-
-const registrationFormSchema = z
-    .object({
-        name: z
-            .string()
-            .min(2, {message: 'Name must be at least 2 characters long'})
-            .max(20, {message: 'Name cannot exceed 20 characters'})
-            .optional(),
-        email: z.string().email({message: 'Invalid email'}),
-        NID: z.coerce
-            .number()
-            .min(1, {message: 'NID is required and must be a valid number'}),
-        password: z
-            .string()
-            .min(8, {message: 'Password must be at least 8 characters long'})
-            .max(20, {message: 'Password cannot exceed 20 characters'})
-            .regex(/^(?=.*[A-Z])/, {
-                message: 'Must contain at least 1 uppercase letter',
-            })
-            .regex(/^(?=.*[!@#$%^&*])/, {
-                message: 'Must contain at least one special character',
-            })
-            .regex(/^(?=.*\d)/, {message: 'Must contain at least one number'}),
-        confirmPassword: z.string(),
-        isDriver: z.boolean(),
-    })
-    .refine((data) => data.password === data.confirmPassword, {
-        message: 'Passwords do not match',
-        path: ['confirmPassword'],
-    });
-
-type FormValues = z.input<typeof registrationFormSchema>;
+import {registrationFormSchema} from './registrationFormSchema';
+import {toast} from 'sonner';
 
 export function RegistrationForm({
     className,
     ...props
 }: React.ComponentProps<'form'>) {
     const [register] = useRegisterMutation();
+    const navigate = useNavigate();
 
-    const form = useForm<FormValues>({
+    const form = useForm<z.input<typeof registrationFormSchema>>({
         resolver: zodResolver(registrationFormSchema),
         defaultValues: {
             name: '',
@@ -66,10 +36,9 @@ export function RegistrationForm({
             isDriver: false,
         },
     });
-    const isDriver = form.watch('isDriver');
-    console.log(isDriver);
 
-    const onSubmit = async (data: FormValues) => {
+    const onSubmit = async (data: z.input<typeof registrationFormSchema>) => {
+        const toastId = toast.loading('Creating account...');
         const userInfo = {
             name: data.name,
             email: data.email,
@@ -78,9 +47,19 @@ export function RegistrationForm({
             confirmPassword: data.confirmPassword,
             isDriver: data.isDriver,
         };
-        console.log(userInfo);
-        const res = await register(userInfo).unwrap();
-        console.log(res);
+        try {
+            const res = await register(userInfo).unwrap();
+            if (res.success) {
+                toast.success('Account is created successfully', {id: toastId});
+                navigate('/');
+                console.log(res);
+            } else {
+                toast.error('Failed to create account', {id: toastId});
+            }
+        } catch (error) {
+            toast.error('Failed to create account', {id: toastId});
+            console.log(error);
+        }
     };
 
     return (
@@ -234,21 +213,3 @@ export function RegistrationForm({
         </form>
     );
 }
-
-// <Field>
-//     <div className='flex items-center'>
-//         <FieldLabel htmlFor='password'>
-//             Password
-//         </FieldLabel>
-//     </div>
-//     <Input
-//         {...field}
-//         id='password'
-//         type='password'
-//         placeholder='********'
-//         required
-//     />
-//     <FieldDescription className='text-red-500'>
-//         {form.formState.errors.password?.message}
-//     </FieldDescription>
-// </Field>
