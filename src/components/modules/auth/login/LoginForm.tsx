@@ -19,16 +19,7 @@ const loginFormSchema = z.object({
     password: z
         .string({error: 'Password must be string'})
         .min(8, {error: 'Password must be at least 8 characters long'})
-        .max(20, {error: 'Password can not exceed 20 characters'})
-        .regex(/^(?=.*[A-Z])/, {
-            error: 'Password must contain at least 1 uppercase letter',
-        })
-        .regex(/^(?=.*[!@#$%^&*])/, {
-            error: 'Password must contain at least one special character',
-        })
-        .regex(/^(?=.*\d)/, {
-            error: 'Password must contain at least one number',
-        }),
+        .max(20, {error: 'Password can not exceed 20 characters'}),
 });
 
 export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
@@ -40,7 +31,8 @@ export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
         },
     });
 
-    const onSubmit = (data: z.infer<typeof loginFormSchema>) => {
+    const onSubmit = async (data: z.infer<typeof loginFormSchema>) => {
+        // const res = await login(data);
         console.log(data);
     };
 
