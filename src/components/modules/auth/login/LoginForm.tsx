@@ -16,6 +16,7 @@ import {Link, useNavigate} from 'react-router';
 import {useLoginMutation} from '@/redux/features/auth/auth.api';
 import {toast} from 'sonner';
 import {loginFormSchema} from './loginFormSchema';
+import type {IErrorResponse} from '@/types';
 
 export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
     const navigate = useNavigate();
@@ -30,21 +31,61 @@ export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
     });
 
     const onSubmit = async (data: z.infer<typeof loginFormSchema>) => {
-        const toastId = toast.loading('Logging in to your account');
+        const toastId = toast.loading('Logging in to your account...');
 
         try {
             const res = await login(data).unwrap();
             if (res.success) {
                 toast.success('Logged in to your account', {id: toastId});
-                navigate('/dashboard');
+                console.log(res);
+                // navigate('/dashboard');
             } else {
                 toast.error('Failed to logged in to your account', {
                     id: toastId,
                 });
             }
-        } catch (error) {
-            toast.error('Failed to logged in to your account', {id: toastId});
-            console.log(error);
+        } catch (err) {
+            const error = err as IErrorResponse;
+
+            const message = error?.data?.message;
+            const status = error?.status;
+
+            switch (status) {
+                case 401:
+                    if (message === 'User is not verified') {
+                        toast.error('Your account is not verified', {
+                            id: toastId,
+                        });
+                        navigate('/verify', {state: {email: data.email}});
+                    } else {
+                        toast.error('Invalid email or password', {id: toastId});
+                    }
+                    break;
+
+                case 404:
+                    toast.error('Email not found', {id: toastId});
+                    break;
+
+                case 403:
+                    toast.error('Your account is blocked or inactive', {
+                        id: toastId,
+                    });
+                    break;
+
+                case 410:
+                    toast.error(
+                        'Your account has been deleted. Contact support',
+                        {id: toastId},
+                    );
+                    break;
+
+                default:
+                    toast.error(
+                        'Something went wrong. Please try again later.',
+                        {id: toastId},
+                    );
+                    break;
+            }
         }
     };
 
