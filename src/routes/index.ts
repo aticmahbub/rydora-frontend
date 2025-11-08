@@ -5,6 +5,7 @@ import RiderLayout from '@/layouts/RiderLayout';
 import About from '@/pages/About';
 import LoginPage from '@/pages/auth/LoginPage';
 import RegistrationPage from '@/pages/auth/RegistrationPage';
+import VerifyPage from '@/pages/VerifyPage';
 
 import {createBrowserRouter} from 'react-router';
 
@@ -17,6 +18,7 @@ export const router = createBrowserRouter([
 
     {path: 'login', Component: LoginPage},
     {path: '/registration', Component: RegistrationPage},
+    {path: '/verify', Component: VerifyPage},
 
     {path: 'admin', Component: AdminLayout},
     {path: 'rider', Component: RiderLayout},

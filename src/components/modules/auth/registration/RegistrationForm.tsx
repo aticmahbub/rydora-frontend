@@ -44,14 +44,12 @@ export function RegistrationForm({
             email: data.email,
             NID: data.NID,
             password: data.password,
-            confirmPassword: data.confirmPassword,
-            isDriver: data.isDriver,
         };
         try {
             const res = await register(userInfo).unwrap();
             if (res.success) {
                 toast.success('Account is created successfully', {id: toastId});
-                navigate('/');
+                navigate('/verify');
                 console.log(res);
             } else {
                 toast.error('Failed to create account', {id: toastId});

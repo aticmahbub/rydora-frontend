@@ -33,12 +33,15 @@ export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
     const onSubmit = async (data: z.infer<typeof loginFormSchema>) => {
         const toastId = toast.loading('Logging in to your account...');
 
+        const userInfo = {email: data.email, password: data.password};
+        console.log(userInfo);
+
         try {
-            const res = await login(data).unwrap();
-            if (res.success) {
+            const res = await login(userInfo).unwrap();
+            if (res.data) {
                 toast.success('Logged in to your account', {id: toastId});
                 console.log(res);
-                // navigate('/dashboard');
+                navigate('/dashboard');
             } else {
                 toast.error('Failed to logged in to your account', {
                     id: toastId,
@@ -47,8 +50,8 @@ export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
         } catch (err) {
             const error = err as IErrorResponse;
 
-            const message = error?.data?.message;
-            const status = error?.status;
+            const message = error?.message;
+            const status = error?.err.statusCode;
 
             switch (status) {
                 case 401:
