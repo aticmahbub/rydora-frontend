@@ -14,6 +14,8 @@ import {zodResolver} from '@hookform/resolvers/zod';
 import {Controller, useForm} from 'react-hook-form';
 import {Link} from 'react-router';
 import {useLoginMutation} from '@/redux/features/auth/auth.api';
+import {Spinner} from '@/components/ui/Spinner';
+import {toast} from 'sonner';
 
 const loginFormSchema = z.object({
     email: z.email({error: 'Invalid email'}),
@@ -35,6 +37,7 @@ export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
 
     const onSubmit = async (data: z.infer<typeof loginFormSchema>) => {
         const res = await login(data);
+        toast.success('test');
         console.log(res);
     };
 
@@ -102,9 +105,9 @@ export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
                         </Field>
                     )}
                 />
-
                 <Button form='login-form' type='submit'>
                     Login
+                    <Spinner />
                 </Button>
                 <FieldSeparator>Or continue with</FieldSeparator>
                 <Field>
