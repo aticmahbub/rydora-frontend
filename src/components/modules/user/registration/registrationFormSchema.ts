@@ -5,9 +5,8 @@ export const registrationFormSchema = z
         name: z
             .string()
             .min(2, {message: 'Name must be at least 2 characters long'})
-            .max(20, {message: 'Name cannot exceed 20 characters'})
-            .optional(),
-        email: z.string().email({message: 'Invalid email'}),
+            .max(20, {message: 'Name cannot exceed 20 characters'}),
+        email: z.email({message: 'Invalid email'}),
         NID: z.coerce
             .number()
             .min(1, {message: 'NID is required and must be a valid number'}),

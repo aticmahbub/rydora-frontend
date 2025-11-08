@@ -14,9 +14,9 @@ import {Controller, useForm} from 'react-hook-form';
 import {Link, useNavigate} from 'react-router';
 import Password from '@/components/ui/password-strength-indicator';
 import {Checkbox} from '@/components/ui/checkbox';
-import {useRegisterMutation} from '@/redux/features/auth/auth.api';
 import {registrationFormSchema} from './registrationFormSchema';
 import {toast} from 'sonner';
+import {useRegisterMutation} from '@/redux/features/user/user.api';
 
 export function RegistrationForm({
     className,
@@ -42,7 +42,7 @@ export function RegistrationForm({
         const userInfo = {
             name: data.name,
             email: data.email,
-            NID: data.NID,
+            NID: data.NID as number,
             password: data.password,
         };
         try {
