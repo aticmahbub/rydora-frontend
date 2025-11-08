@@ -1,7 +1,7 @@
 import Logo from '@/assets/icons/Logo';
 import registrationImage from '../../assets/images/registration-image.png';
 import {Link} from 'react-router';
-import {RegistrationForm} from '@/components/modules/auth/registration/RegistrationForm';
+import {RegistrationForm} from '@/components/modules/user/registration/RegistrationForm';
 
 export default function RegistrationPage() {
     return (

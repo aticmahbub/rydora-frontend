@@ -2,10 +2,10 @@ import App from '@/App';
 import AdminLayout from '@/layouts/AdminLayout';
 import DriverLayout from '@/layouts/DriverLayout';
 import RiderLayout from '@/layouts/RiderLayout';
-import About from '@/pages/About';
+import About from '@/pages/public/About';
 import LoginPage from '@/pages/auth/LoginPage';
-import RegistrationPage from '@/pages/auth/RegistrationPage';
-import VerifyPage from '@/pages/VerifyPage';
+import RegistrationPage from '@/pages/user/RegistrationPage';
+import VerifyPage from '@/pages/otp/VerifyOTPPage';
 
 import {createBrowserRouter} from 'react-router';
 

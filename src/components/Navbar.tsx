@@ -27,8 +27,11 @@ import {
 } from '@/components/ui/sheet';
 import {ModeToggle} from './mode-toggle';
 import {Link} from 'react-router';
+import {useUserInfoQuery} from '@/redux/features/user/user.api';
 
 export default function Navbar() {
+    const {data} = useUserInfoQuery(undefined);
+    console.log(data);
     const navLinks = [
         {href: '/', label: 'Home', role: 'PUBLIC'},
         {href: '/about', label: 'About', role: 'PUBLIC'},
@@ -195,8 +198,11 @@ export default function Navbar() {
                                 </div>
                                 <div className='mt-6 flex flex-col gap-4'>
                                     <ModeToggle />
-                                    <Button variant='outline'>Login</Button>
-                                    <Button>Register</Button>
+                                    <div>
+                                        {' '}
+                                        <Button variant='outline'>Login</Button>
+                                        <Button>Register</Button>
+                                    </div>
                                 </div>
                             </div>
                         </SheetContent>
