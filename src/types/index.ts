@@ -4,6 +4,7 @@ export type {
     IErr,
     IGenericErrorResponse,
 } from './response.types';
+
 export type {
     ILoginData,
     ILoginFormData,
@@ -12,3 +13,5 @@ export type {
     ICurrentLocation,
     IAuth,
 } from './auth.types';
+
+export type {ISidebarItems} from './sideBarItems.types';

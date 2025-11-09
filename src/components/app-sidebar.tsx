@@ -11,26 +11,12 @@ import {
     SidebarMenuItem,
     SidebarRail,
 } from '@/components/ui/sidebar';
+import {adminSidebarItems} from '@/layouts/adminSidebarItems';
 
 // This is sample data.
 const data = {
     versions: ['1.0.1', '1.1.0-alpha', '2.0.0-beta1'],
-    navMain: [
-        {
-            title: 'Getting Started',
-            url: '#',
-            items: [
-                {
-                    title: 'Installation',
-                    url: '#',
-                },
-                {
-                    title: 'Project Structure',
-                    url: '#',
-                },
-            ],
-        },
-    ],
+    navMain: adminSidebarItems,
 };
 
 export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {

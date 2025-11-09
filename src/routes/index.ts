@@ -6,8 +6,9 @@ import VerifyPage from '@/pages/otp/VerifyOTPPage';
 
 import {createBrowserRouter} from 'react-router';
 import DashboardLayout from '@/layouts/DashboardLayout';
-import Analytics from '@/pages/Analytics';
 import UserBookings from '@/pages/user/UserBookings';
+import {generateRoutes} from '@/utils/generateRoutes';
+import {adminSidebarItems} from '@/layouts/adminSidebarItems';
 
 export const router = createBrowserRouter([
     {
@@ -19,7 +20,7 @@ export const router = createBrowserRouter([
     {
         path: '/admin',
         Component: DashboardLayout,
-        children: [{path: 'analytics', Component: Analytics}],
+        children: [...generateRoutes(adminSidebarItems)],
     },
 
     {
