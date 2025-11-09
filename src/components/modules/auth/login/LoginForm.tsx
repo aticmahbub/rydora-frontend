@@ -41,7 +41,7 @@ export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
             if (res.data) {
                 toast.success('Logged in to your account', {id: toastId});
                 console.log(res);
-                navigate('/dashboard');
+                navigate('/');
             } else {
                 toast.error('Failed to logged in to your account', {
                     id: toastId,

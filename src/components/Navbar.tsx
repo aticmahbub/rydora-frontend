@@ -28,9 +28,15 @@ import {
 import {ModeToggle} from './mode-toggle';
 import {Link} from 'react-router';
 import {useUserInfoQuery} from '@/redux/features/user/user.api';
+import {authApi, useLogoutMutation} from '@/redux/features/auth/auth.api';
+import {useAppDispatch} from '@/redux/hook';
 
 export default function Navbar() {
+    const dispatch = useAppDispatch();
+
     const {data} = useUserInfoQuery(undefined);
+    const [logout] = useLogoutMutation();
+
     console.log(data);
     const navLinks = [
         {href: '/', label: 'Home', role: 'PUBLIC'},
@@ -54,6 +60,11 @@ export default function Navbar() {
         },
     ];
 
+    const handleLogout = async () => {
+        await logout(undefined);
+        dispatch(authApi.util.resetApiState());
+        // dispatch(userApi.util.resetApiState());
+    };
     return (
         <section className='py-4 '>
             <div className='container mx-auto'>
@@ -110,12 +121,21 @@ export default function Navbar() {
                     </NavigationMenu>
                     <div className='hidden items-center gap-4 lg:flex'>
                         <ModeToggle />
-                        <Button variant='outline'>
-                            <Link to='/login'>Login</Link>
-                        </Button>
-                        <Button>
-                            <Link to='/registration'>Register</Link>
-                        </Button>
+                        {!data?.data?.email && (
+                            <div>
+                                <Button variant='outline'>
+                                    <Link to='/login'>Login</Link>
+                                </Button>
+                                <Button>
+                                    <Link to='/registration'>Register</Link>
+                                </Button>
+                            </div>
+                        )}
+                        {data?.data?.email && (
+                            <Button onClick={handleLogout} variant='outline'>
+                                Logout
+                            </Button>
+                        )}
                     </div>
                     <Sheet>
                         <SheetTrigger asChild className='lg:hidden'>

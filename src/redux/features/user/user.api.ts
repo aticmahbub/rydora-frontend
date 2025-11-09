@@ -1,7 +1,7 @@
 import {baseApi} from '@/redux/baseApi';
 import type {IRegisterFormData, IResponse, IUserData} from '@/types';
 
-const userApi = baseApi.injectEndpoints({
+export const userApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         //
         register: builder.mutation<IResponse<IUserData>, IRegisterFormData>({
@@ -16,6 +16,7 @@ const userApi = baseApi.injectEndpoints({
                 url: '/user/info',
                 method: 'GET',
             }),
+            providesTags: ['USER'],
         }),
     }),
 });
