@@ -15,3 +15,4 @@ export type {
 } from './auth.types';
 
 export type {ISidebarItems} from './sideBarItems.types';
+export type {TRole} from './role.types';

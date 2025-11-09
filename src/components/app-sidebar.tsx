@@ -11,15 +11,14 @@ import {
     SidebarMenuItem,
     SidebarRail,
 } from '@/components/ui/sidebar';
-import {adminSidebarItems} from '@/layouts/adminSidebarItems';
-
-// This is sample data.
-const data = {
-    versions: ['1.0.1', '1.1.0-alpha', '2.0.0-beta1'],
-    navMain: adminSidebarItems,
-};
+import {useUserInfoQuery} from '@/redux/features/user/user.api';
+import {getSidebarItems} from '@/utils/getSidebarItems';
 
 export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
+    const {data: userData} = useUserInfoQuery(undefined);
+    const data = {
+        navMain: getSidebarItems(userData?.data?.role),
+    };
     return (
         <Sidebar {...props}>
             <SidebarHeader></SidebarHeader>
