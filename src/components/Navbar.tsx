@@ -30,6 +30,7 @@ import {Link} from 'react-router';
 import {useUserInfoQuery} from '@/redux/features/user/user.api';
 import {authApi, useLogoutMutation} from '@/redux/features/auth/auth.api';
 import {useAppDispatch} from '@/redux/hook';
+import {role} from '@/constants/role';
 
 export default function Navbar() {
     const dispatch = useAppDispatch();
@@ -41,6 +42,8 @@ export default function Navbar() {
     const navLinks = [
         {href: '/', label: 'Home', role: 'PUBLIC'},
         {href: '/about', label: 'About', role: 'PUBLIC'},
+        {href: '/admin', label: 'Dashboard', role: role.admin},
+        {href: '/user', label: 'Dashboard', role: role.user},
     ];
     const features = [
         {
@@ -108,14 +111,32 @@ export default function Navbar() {
                             </NavigationMenuItem>
 
                             {navLinks.map((item) => (
-                                <NavigationMenuItem key={item.href}>
-                                    <NavigationMenuLink
-                                        asChild
-                                        className={navigationMenuTriggerStyle()}
-                                    >
-                                        <Link to={item.href}>{item.label}</Link>
-                                    </NavigationMenuLink>
-                                </NavigationMenuItem>
+                                <>
+                                    {item.role === 'PUBLIC' && (
+                                        <NavigationMenuItem key={item.href}>
+                                            <NavigationMenuLink
+                                                asChild
+                                                className={navigationMenuTriggerStyle()}
+                                            >
+                                                <Link to={item.href}>
+                                                    {item.label}
+                                                </Link>
+                                            </NavigationMenuLink>
+                                        </NavigationMenuItem>
+                                    )}
+                                    {item.role === data?.data?.role && (
+                                        <NavigationMenuItem key={item.href}>
+                                            <NavigationMenuLink
+                                                asChild
+                                                className={navigationMenuTriggerStyle()}
+                                            >
+                                                <Link to={item.href}>
+                                                    {item.label}
+                                                </Link>
+                                            </NavigationMenuLink>
+                                        </NavigationMenuItem>
+                                    )}
+                                </>
                             ))}
                         </NavigationMenuList>
                     </NavigationMenu>

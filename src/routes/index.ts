@@ -6,15 +6,17 @@ import VerifyPage from '@/pages/otp/VerifyOTPPage';
 
 import {createBrowserRouter} from 'react-router';
 import DashboardLayout from '@/layouts/DashboardLayout';
-import {generateRoutes} from '@/utils/generateRoutes';
+
 import {adminSidebarItems} from '@/routes/adminSidebarItems';
 import {userSidebarItems} from './userSidebarItems';
+import {generateRoutes} from '@/utils/generateRoutes';
+import {withAuth} from '@/utils/withAuth';
 
 export const router = createBrowserRouter([
     {
         path: '/',
         Component: App,
-        children: [{path: 'about', Component: About}],
+        children: [{path: 'about', Component: withAuth(About, 'USER')}],
     },
 
     {

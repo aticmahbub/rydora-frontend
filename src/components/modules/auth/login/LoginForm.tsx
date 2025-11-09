@@ -50,8 +50,8 @@ export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
         } catch (err) {
             const error = err as IErrorResponse;
 
-            const message = error?.message;
-            const status = error?.err.statusCode;
+            const message = error?.data.message;
+            const status = error?.status;
 
             switch (status) {
                 case 401:

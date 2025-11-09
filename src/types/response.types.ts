@@ -5,10 +5,29 @@ export interface IResponse<T> {
     data: T;
 }
 
-export interface IErrorResponse {
-    success: boolean;
+// export interface IErrorResponse {
+//     success: boolean;
+//     message: string;
+//     errorSources?: IErrorSources[];
+//     err: IErr;
+//     stack?: string;
+// }
+
+export interface IGenericErrorResponse {
+    statusCode: number;
     message: string;
     errorSources?: IErrorSources[];
+}
+
+export interface IErrorResponse {
+    status: number;
+    data: Data;
+}
+
+export interface Data {
+    success: boolean;
+    message: string;
+    errorSources: IErrorSources[];
     err: IErr;
     stack?: string;
 }
@@ -22,10 +41,4 @@ export interface IErr {
     message?: string;
     name?: string;
     expiredAt?: Date;
-}
-
-export interface IGenericErrorResponse {
-    statusCode: number;
-    message: string;
-    errorSources?: IErrorSources[];
 }
