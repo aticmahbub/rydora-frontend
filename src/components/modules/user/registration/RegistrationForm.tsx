@@ -13,10 +13,19 @@ import {zodResolver} from '@hookform/resolvers/zod';
 import {Controller, useForm} from 'react-hook-form';
 import {Link, useNavigate} from 'react-router';
 import Password from '@/components/ui/password-strength-indicator';
-import {Checkbox} from '@/components/ui/checkbox';
 import {registrationFormSchema} from './registrationFormSchema';
 import {toast} from 'sonner';
 import {useRegisterMutation} from '@/redux/features/user/user.api';
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import {role} from '@/constants/role';
 
 export function RegistrationForm({
     className,
@@ -33,7 +42,7 @@ export function RegistrationForm({
             NID: '',
             password: '',
             confirmPassword: '',
-            isDriver: false,
+            role: role.rider,
         },
     });
 
@@ -43,14 +52,14 @@ export function RegistrationForm({
             name: data.name,
             email: data.email,
             NID: data.NID as number,
-            password: data.password,
+            password: data.confirmPassword,
+            role: data.role,
         };
         try {
             const res = await register(userInfo).unwrap();
             if (res.success) {
                 toast.success('Account is created successfully', {id: toastId});
-                navigate('/verify');
-                console.log(res);
+                navigate('/verify', {state: {email: data.email}});
             } else {
                 toast.error('Failed to create account', {id: toastId});
             }
@@ -160,22 +169,31 @@ export function RegistrationForm({
                 />
 
                 <Controller
-                    name='isDriver'
+                    name='role'
                     control={form.control}
                     render={({field}) => (
                         <Field>
-                            <FieldLabel htmlFor='email'>
-                                Create account as a driver
-                            </FieldLabel>
-
-                            <Checkbox
-                                id='isDriver'
-                                checked={field.value}
-                                className='w-2'
-                                onCheckedChange={(checked) =>
-                                    field.onChange(checked === true)
-                                }
-                            />
+                            <FieldLabel>Select role</FieldLabel>
+                            <Select
+                                onValueChange={field.onChange}
+                                value={field.value}
+                                defaultValue={field.value}
+                            >
+                                <SelectTrigger className='w-[180px]'>
+                                    <SelectValue placeholder='Select a role' />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        <SelectLabel>Role</SelectLabel>
+                                        <SelectItem value='RIDER'>
+                                            Rider
+                                        </SelectItem>
+                                        <SelectItem value='DRIVER'>
+                                            Driver
+                                        </SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
                         </Field>
                     )}
                 />

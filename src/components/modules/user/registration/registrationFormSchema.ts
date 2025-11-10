@@ -1,3 +1,4 @@
+import {role} from '@/constants/role';
 import z from 'zod';
 
 export const registrationFormSchema = z
@@ -22,7 +23,7 @@ export const registrationFormSchema = z
             })
             .regex(/^(?=.*\d)/, {message: 'Must contain at least one number'}),
         confirmPassword: z.string(),
-        isDriver: z.boolean(),
+        role: z.enum([...Object.values(role)]),
     })
     .refine((data) => data.password === data.confirmPassword, {
         message: 'Passwords do not match',

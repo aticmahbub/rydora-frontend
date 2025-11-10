@@ -31,6 +31,12 @@ export const router = createBrowserRouter([
         children: [...generateRoutes(userSidebarItems)],
     },
 
+    {
+        path: '/driver',
+        Component: DashboardLayout,
+        children: [...generateRoutes(userSidebarItems)],
+    },
+
     {path: '/login', Component: LoginPage},
     {path: '/registration', Component: RegistrationPage},
     {path: '/verify', Component: VerifyPage},
