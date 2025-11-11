@@ -7,12 +7,12 @@ export const getSidebarItems = (userRole: TRole) => {
     switch (userRole) {
         case role.superAdmin:
             return [...adminSidebarItems];
-        case role.admin:
+        case role.ADMIN:
             return [...adminSidebarItems];
-        case role.user:
+        case role.USER:
             return [...userSidebarItems];
-        case role.rider:
-        case role.driver:
+        case role.RIDER:
+        case role.DRIVER:
             return [...userSidebarItems];
 
         default:

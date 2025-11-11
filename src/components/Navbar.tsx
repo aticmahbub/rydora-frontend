@@ -42,8 +42,8 @@ export default function Navbar() {
     const navLinks = [
         {href: '/', label: 'Home', role: 'PUBLIC'},
         {href: '/about', label: 'About', role: 'PUBLIC'},
-        {href: '/admin', label: 'Dashboard', role: role.admin},
-        {href: '/user', label: 'Dashboard', role: role.user},
+        {href: '/admin', label: 'Dashboard', role: role.ADMIN},
+        {href: '/user', label: 'Dashboard', role: role.USER},
     ];
     const features = [
         {

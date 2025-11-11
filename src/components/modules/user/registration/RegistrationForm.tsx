@@ -42,7 +42,7 @@ export function RegistrationForm({
             NID: '',
             password: '',
             confirmPassword: '',
-            role: role.rider,
+            role: role.RIDER,
         },
     });
 
@@ -59,7 +59,7 @@ export function RegistrationForm({
             const res = await register(userInfo).unwrap();
             if (res.success) {
                 toast.success('Account is created successfully', {id: toastId});
-                if (data.role === role.driver) {
+                if (data.role === role.DRIVER) {
                     navigate('/create-driver');
                     return;
                 }
