@@ -37,13 +37,18 @@ export default function Navbar() {
 
     const {data} = useUserInfoQuery(undefined);
     const [logout] = useLogoutMutation();
+    console.log(data?.data?.role);
 
-    console.log(data);
     const navLinks = [
         {href: '/', label: 'Home', role: 'PUBLIC'},
         {href: '/about', label: 'About', role: 'PUBLIC'},
+        {href: '/contact', label: 'Contact', role: 'PUBLIC'},
+
         {href: '/admin', label: 'Dashboard', role: role.ADMIN},
+        {href: '/admin', label: 'Dashboard', role: role.SUPER_ADMIN},
         {href: '/user', label: 'Dashboard', role: role.USER},
+        {href: '/rider', label: 'Dashboard', role: role.RIDER},
+        {href: '/driver', label: 'Dashboard', role: role.DRIVER},
     ];
     const features = [
         {
@@ -66,21 +71,17 @@ export default function Navbar() {
     const handleLogout = async () => {
         await logout(undefined);
         dispatch(authApi.util.resetApiState());
-        // dispatch(userApi.util.resetApiState());
     };
     return (
         <section className='py-4 '>
             <div className='container mx-auto'>
                 <nav className='flex items-center justify-between'>
-                    <a
-                        href='https://www.shadcnblocks.com'
-                        className='flex items-center gap-2'
-                    >
+                    <Link to='/' className='flex items-center gap-2'>
                         <Logo />
                         <span className='text-lg font-semibold tracking-tighter'>
                             Rydora
                         </span>
-                    </a>
+                    </Link>
                     <NavigationMenu className='hidden lg:block'>
                         <NavigationMenuList>
                             {/* Features */}
@@ -110,8 +111,8 @@ export default function Navbar() {
                                 </NavigationMenuContent>
                             </NavigationMenuItem>
 
-                            {navLinks.map((item) => (
-                                <>
+                            {navLinks.map((item, idx) => (
+                                <div key={idx}>
                                     {item.role === 'PUBLIC' && (
                                         <NavigationMenuItem key={item.href}>
                                             <NavigationMenuLink
@@ -136,10 +137,11 @@ export default function Navbar() {
                                             </NavigationMenuLink>
                                         </NavigationMenuItem>
                                     )}
-                                </>
+                                </div>
                             ))}
                         </NavigationMenuList>
                     </NavigationMenu>
+                    {/* Logout */}
                     <div className='hidden items-center gap-4 lg:flex'>
                         <ModeToggle />
                         {!data?.data?.email && (
@@ -170,15 +172,15 @@ export default function Navbar() {
                         >
                             <SheetHeader>
                                 <SheetTitle>
-                                    <a
-                                        href='https://www.shadcnblocks.com'
+                                    <Link
+                                        to=''
                                         className='flex items-center gap-2'
                                     >
                                         <Logo />
                                         <span className='text-lg font-semibold tracking-tighter'>
                                             Rydora
                                         </span>
-                                    </a>
+                                    </Link>
                                 </SheetTitle>
                             </SheetHeader>
                             <div className='flex flex-col p-4'>

@@ -8,7 +8,7 @@ import type {ISidebarItems} from '@/types';
 
 export const riderSidebarItems: ISidebarItems[] = [
     {
-        title: 'History',
+        title: 'Rider Features',
         items: [
             {
                 title: 'Create Driver',

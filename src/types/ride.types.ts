@@ -1,10 +1,4 @@
-export enum RideStatus {
-    REQUESTED = 'REQUESTED',
-    ACCEPTED = 'ACCEPTED',
-    ONGOING = 'ONGOING',
-    COMPLETED = 'COMPLETED',
-    CANCELLED = 'CANCELLED',
-}
+import type {TRideStatus} from '@/constants/rideStatus';
 
 export interface IRide {
     _id?: string;
@@ -21,7 +15,7 @@ export interface IRide {
     fare?: number;
     distance?: number;
 
-    rideStatus?: RideStatus;
+    rideStatus?: TRideStatus;
 
     startedAt?: Date;
     completedAt?: Date;
@@ -31,4 +25,29 @@ export interface IRide {
 
     createdAt?: Date;
     updatedAt?: Date;
+}
+
+export interface IRideResponse {
+    riderId: string;
+    driverId: null | string;
+    pickupLocation: IPickupLocation;
+    dropoffLocation: IDropoffLocation;
+    fare: number;
+    rideStatus: string;
+    _id: string;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+}
+
+export interface IPickupLocation {
+    type: string;
+    coordinates: number[];
+    address: string;
+}
+
+export interface IDropoffLocation {
+    type: string;
+    coordinates: number[];
+    address: string;
 }

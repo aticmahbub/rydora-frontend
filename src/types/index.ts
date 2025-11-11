@@ -16,3 +16,5 @@ export type {
 
 export type {ISidebarItems} from './sideBarItems.types';
 export type {TRole} from './role.types';
+
+export type {IRide, IRideResponse} from './ride.types';

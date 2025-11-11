@@ -5,12 +5,12 @@ import RegistrationPage from '@/pages/user/RegistrationPage';
 import VerifyPage from '@/pages/otp/VerifyOTPPage';
 import {createBrowserRouter} from 'react-router';
 import DashboardLayout from '@/layouts/DashboardLayout';
-import {adminSidebarItems} from '@/routes/adminSidebarItems';
-import {userSidebarItems} from './userSidebarItems';
 import {generateRoutes} from '@/utils/generateRoutes';
+import {adminSidebarItems} from './adminSidebarItems';
 import {withAuth} from '@/utils/withAuth';
-import {driverSidebarItems} from './driverSidebarItems';
+import {userSidebarItems} from './userSidebarItems';
 import {riderSidebarItems} from './riderSideBarItems';
+import {driverSidebarItems} from './driverSidebarItems';
 
 export const router = createBrowserRouter([
     {
@@ -21,7 +21,7 @@ export const router = createBrowserRouter([
 
     {
         path: '/admin',
-        Component: withAuth(DashboardLayout, 'SUPER_ADMIN'),
+        Component: DashboardLayout,
         children: [...generateRoutes(adminSidebarItems)],
     },
 
@@ -33,7 +33,7 @@ export const router = createBrowserRouter([
 
     {
         path: '/rider',
-        Component: withAuth(DashboardLayout, 'RIDER'),
+        Component: DashboardLayout,
         children: [...generateRoutes(riderSidebarItems)],
     },
 

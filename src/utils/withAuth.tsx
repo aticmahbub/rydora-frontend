@@ -1,3 +1,4 @@
+import {Spinner} from '@/components/ui/Spinner';
 import UnauthorizedPage from '@/pages/UnauthorizedPage';
 import {useUserInfoQuery} from '@/redux/features/user/user.api';
 import type {TRole} from '@/types';
@@ -8,13 +9,16 @@ export const withAuth = (Component: ComponentType, requiredRole?: TRole) => {
     return function AuthWrapper() {
         const {data, isLoading} = useUserInfoQuery(undefined);
 
-        if (!data?.data?.role && isLoading) {
-            return <Navigate to='/login' />;
+        if (isLoading) return <Spinner />;
+
+        if (!data?.data?.role) {
+            return <Navigate to='/login' replace />;
         }
 
-        if (requiredRole && !isLoading && requiredRole !== data?.data?.role) {
+        if (requiredRole && requiredRole !== data.data.role) {
             return <UnauthorizedPage />;
         }
+
         return <Component />;
     };
 };

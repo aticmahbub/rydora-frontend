@@ -6,4 +6,4 @@ export const RideStatus = {
     CANCELLED: 'CANCELLED',
 } as const;
 
-export type RideStatus = (typeof RideStatus)[keyof typeof RideStatus];
+export type TRideStatus = (typeof RideStatus)[keyof typeof RideStatus];

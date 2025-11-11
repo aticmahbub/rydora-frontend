@@ -1,9 +1,11 @@
 import {baseApi} from '@/redux/baseApi';
+import type {IResponse} from '@/types';
+import type {IRide, IRideResponse} from '@/types';
 
 export const rideApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         //
-        requestRide: builder.mutation<IResponse<IUserData>, IRegisterFormData>({
+        requestRide: builder.mutation<IResponse<IRideResponse>, IRide>({
             query: (rideInfo) => ({
                 url: '/ride/request',
                 method: 'POST',
@@ -20,4 +22,4 @@ export const rideApi = baseApi.injectEndpoints({
     }),
 });
 
-export const {useRegisterMutation, useUserInfoQuery} = rideApi;
+export const {useRequestRideMutation} = rideApi;
