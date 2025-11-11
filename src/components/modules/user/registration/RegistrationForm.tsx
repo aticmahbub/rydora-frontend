@@ -59,6 +59,10 @@ export function RegistrationForm({
             const res = await register(userInfo).unwrap();
             if (res.success) {
                 toast.success('Account is created successfully', {id: toastId});
+                if (data.role === role.driver) {
+                    navigate('/create-driver');
+                    return;
+                }
                 navigate('/verify', {state: {email: data.email}});
             } else {
                 toast.error('Failed to create account', {id: toastId});
