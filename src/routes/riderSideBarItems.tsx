@@ -1,9 +1,9 @@
 import CreateDriver from '@/pages/rider/CreateDriver';
+import RequestRide from '@/pages/rider/RequestRide';
 import RideDetails from '@/pages/rider/RideDetails';
 import RideHistory from '@/pages/rider/RideHistory';
 import RiderProfile from '@/pages/rider/RiderProfile';
 import TrackRide from '@/pages/rider/TrackRide';
-import UserBookings from '@/pages/user/UserBookings';
 import type {ISidebarItems} from '@/types';
 
 export const riderSidebarItems: ISidebarItems[] = [
@@ -12,13 +12,13 @@ export const riderSidebarItems: ISidebarItems[] = [
         items: [
             {
                 title: 'Create Driver',
-                url: 'rider/create',
+                url: '/rider/create',
                 component: CreateDriver,
             },
             {
                 title: 'Request Ride',
-                url: 'rider/request',
-                component: UserBookings,
+                url: '/rider/request',
+                component: RequestRide,
             },
             {
                 title: 'Ride Details',
@@ -37,7 +37,7 @@ export const riderSidebarItems: ISidebarItems[] = [
             },
             {
                 title: 'Track Ride',
-                url: 'rider/track',
+                url: '/rider/track',
                 component: TrackRide,
             },
         ],

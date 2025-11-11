@@ -20,6 +20,11 @@ export const router = createBrowserRouter([
     },
 
     {
+        path: '/ride',
+        Component: DashboardLayout,
+        children: [...generateRoutes(riderSidebarItems)],
+    },
+    {
         path: '/admin',
         Component: DashboardLayout,
         children: [...generateRoutes(adminSidebarItems)],

@@ -7,82 +7,153 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 
-import {
-    Field,
-    FieldDescription,
-    FieldGroup,
-    FieldLabel,
-} from '@/components/ui/field';
+import {Field, FieldGroup} from '@/components/ui/field';
 import {Input} from '@/components/ui/input';
+import {useForm} from 'react-hook-form';
+import {
+    requestRideFormSchema,
+    type TRequestRideForm,
+} from './requestRideFormSchema';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from '@/components/ui/form';
+import {useUserInfoQuery} from '@/redux/features/user/user.api';
+import {Spinner} from '@/components/ui/Spinner';
+import {useEffect} from 'react';
+import {toast} from 'sonner';
+import {useRequestRideMutation} from '@/redux/features/ride/ride.api';
+import type {IRide} from '@/types';
 
 export function RequestRideForm({...props}: React.ComponentProps<typeof Card>) {
+    const {data: userData, isLoading} = useUserInfoQuery(undefined);
+    const [requestRide] = useRequestRideMutation();
+
+    const form = useForm<TRequestRideForm>({
+        resolver: zodResolver(requestRideFormSchema),
+        defaultValues: {
+            riderId: '',
+            pickupLocation: '',
+            dropoffLocation: '',
+            fare: '',
+        },
+    });
+
+    useEffect(() => {
+        if (userData?.data?._id) {
+            form.setValue('riderId', userData.data._id);
+        }
+    }, [userData, form]);
+
+    const onSubmit = async (data: TRequestRideForm) => {
+        const toastId = toast.loading('Requesting ride...');
+        const rideInfo: Partial<IRide> = {
+            riderId: userData?.data?._id,
+            pickupLocation: data.pickupLocation,
+            dropoffLocation: data.dropoffLocation,
+            fare: data.fare as number,
+        };
+        try {
+            const res = await requestRide(rideInfo);
+            console.log(res);
+            toast.success('Ride is requested successfully', {id: toastId});
+        } catch (error) {
+            toast.error('Failed to request ride', {id: toastId});
+            console.log(error);
+        }
+    };
+    if (isLoading) {
+        return <Spinner />;
+    }
     return (
         <Card {...props}>
             <CardHeader>
-                <CardTitle>Create an account</CardTitle>
+                <CardTitle>Enter your trip details below</CardTitle>
                 <CardDescription>
                     Enter your information below to create your account
                 </CardDescription>
             </CardHeader>
             <CardContent>
-                <form>
-                    <FieldGroup>
-                        <Field>
-                            <FieldLabel htmlFor='name'>Full Name</FieldLabel>
-                            <Input
-                                id='name'
-                                type='text'
-                                placeholder='John Doe'
-                                required
-                            />
-                        </Field>
-                        <Field>
-                            <FieldLabel htmlFor='email'>Email</FieldLabel>
-                            <Input
-                                id='email'
-                                type='email'
-                                placeholder='m@example.com'
-                                required
-                            />
-                            <FieldDescription>
-                                We&apos;ll use this to contact you. We will not
-                                share your email with anyone else.
-                            </FieldDescription>
-                        </Field>
-                        <Field>
-                            <FieldLabel htmlFor='password'>Password</FieldLabel>
-                            <Input id='password' type='password' required />
-                            <FieldDescription>
-                                Must be at least 8 characters long.
-                            </FieldDescription>
-                        </Field>
-                        <Field>
-                            <FieldLabel htmlFor='confirm-password'>
-                                Confirm Password
-                            </FieldLabel>
-                            <Input
-                                id='confirm-password'
-                                type='password'
-                                required
-                            />
-                            <FieldDescription>
-                                Please confirm your password.
-                            </FieldDescription>
-                        </Field>
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)}>
                         <FieldGroup>
-                            <Field>
-                                <Button type='submit'>Create Account</Button>
-                                <Button variant='outline' type='button'>
-                                    Sign up with Google
-                                </Button>
-                                <FieldDescription className='px-6 text-center'>
-                                    Already have an account?{' '}
-                                    <a href='#'>Sign in</a>
-                                </FieldDescription>
-                            </Field>
+                            <FormField
+                                control={form.control}
+                                name='pickupLocation'
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>Pickup Location</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type='text'
+                                                placeholder='Pickup Location'
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormDescription className='sr-only'>
+                                            Pickup Location
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name='dropoffLocation'
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>
+                                            Destination Location
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type='text'
+                                                placeholder='Destination Location'
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormDescription className='sr-only'>
+                                            Destination Location
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name='fare'
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>Fare</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                {...field}
+                                                value={field.value as number}
+                                                type='number'
+                                                placeholder='Fare'
+                                            />
+                                        </FormControl>
+                                        <FormDescription className='sr-only'>
+                                            Fare
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FieldGroup>
+                                <Field>
+                                    <Button type='submit'>Request</Button>
+                                </Field>
+                            </FieldGroup>
                         </FieldGroup>
-                    </FieldGroup>
-                </form>
+                    </form>
+                </Form>
             </CardContent>
         </Card>
     );

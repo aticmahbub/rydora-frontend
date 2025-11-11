@@ -1,7 +1,7 @@
 import type {TRideStatus} from '@/constants/rideStatus';
 
 export interface IRide {
-    _id?: string;
+    _id: string;
 
     riderId: string;
     driverId?: string;

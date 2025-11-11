@@ -5,13 +5,15 @@ import type {IRide, IRideResponse} from '@/types';
 export const rideApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         //
-        requestRide: builder.mutation<IResponse<IRideResponse>, IRide>({
-            query: (rideInfo) => ({
-                url: '/ride/request',
-                method: 'POST',
-                data: rideInfo,
-            }),
-        }),
+        requestRide: builder.mutation<IResponse<IRideResponse>, Partial<IRide>>(
+            {
+                query: (rideInfo) => ({
+                    url: '/ride/request',
+                    method: 'POST',
+                    data: rideInfo,
+                }),
+            },
+        ),
         // userInfo: builder.query({
         //     query: () => ({
         //         url: '/user/info',
