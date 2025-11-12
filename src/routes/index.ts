@@ -11,7 +11,6 @@ import {withAuth} from '@/utils/withAuth';
 import {userSidebarItems} from './userSidebarItems';
 import {riderSidebarItems} from './riderSideBarItems';
 import {driverSidebarItems} from './driverSidebarItems';
-import ReactLeafletMap from '@/components/modules/map/ReactLeafletMap';
 
 export const router = createBrowserRouter([
     {
@@ -19,12 +18,6 @@ export const router = createBrowserRouter([
         Component: App,
         children: [{path: 'about', Component: About}],
     },
-
-    {
-        path: '/map',
-        Component: ReactLeafletMap,
-    },
-
     {
         path: '/ride',
         Component: DashboardLayout,
