@@ -1,4 +1,5 @@
 import type {TRideStatus} from '@/constants/rideStatus';
+import type {IGeoPoint} from './location.types';
 
 export interface IRide {
     _id: string;
@@ -7,10 +8,9 @@ export interface IRide {
     driverId?: string;
     // vehicleId?: Types.ObjectId;
 
-    // Instead of plain strings, use GeoJSON to support nearby driver queries
-    pickupLocation: string;
+    pickupLocation: IGeoPoint;
 
-    dropoffLocation: string;
+    dropoffLocation: IGeoPoint;
 
     fare?: number;
     distance?: number;

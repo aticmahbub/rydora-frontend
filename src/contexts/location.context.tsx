@@ -1,4 +1,5 @@
 // src/context/LocationContext.tsx
+import {DEFAULT_COORDINATES} from '@/constants/defaultCoordinates';
 import {
     createContext,
     useContext,
@@ -38,6 +39,7 @@ export const LocationProvider = ({children}: {children: ReactNode}) => {
             (err) => {
                 setError(err.message);
                 setLoading(false);
+                setLocation(DEFAULT_COORDINATES);
             },
             {enableHighAccuracy: true},
         );

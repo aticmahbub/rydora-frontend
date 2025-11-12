@@ -1,14 +1,14 @@
-// MapView.tsx
 import {MapContainer, TileLayer, Marker, Popup} from 'react-leaflet';
 import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 
 const pickupIcon = new L.Icon({
-    iconUrl: '/pickup.png',
+    iconUrl: '../../../assets/icons/pickup.png',
     iconSize: [32, 32],
 });
 
 const dropoffIcon = new L.Icon({
-    iconUrl: '/dropoff.png',
+    iconUrl: '../../../assets/icons/dropoff.png',
     iconSize: [32, 32],
 });
 
@@ -20,25 +20,29 @@ interface MapViewProps {
 
 export default function MapView({pickup, dropoff, driver}: MapViewProps) {
     const center = pickup || {lat: 23.8103, lng: 90.4125};
+    console.log(center, 'center');
 
     return (
         <MapContainer
+            style={{height: '600px', width: '100%'}}
             center={center}
             zoom={14}
-            style={{height: '100%', width: '100%'}}
+            // style={{height: '100%', width: '100%'}}
         >
             <TileLayer
-                attribution='&copy; <a href="https://osm.org">OpenStreetMap</a>'
                 url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                attribution='&copy; <a href="https://osm.org">OpenStreetMap</a>'
             />
 
             <Marker position={pickup} icon={pickupIcon}>
                 <Popup>Pickup Location</Popup>
             </Marker>
 
-            <Marker position={dropoff} icon={dropoffIcon}>
-                <Popup>Dropoff Location</Popup>
-            </Marker>
+            {dropoff && (
+                <Marker position={dropoff} icon={dropoffIcon}>
+                    <Popup>Dropoff Location</Popup>
+                </Marker>
+            )}
 
             {driver && (
                 <Marker
