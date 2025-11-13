@@ -32,9 +32,10 @@ import {useRequestRideMutation} from '@/redux/features/ride/ride.api';
 import type {IRide} from '@/types';
 
 export function RequestRideForm({...props}: React.ComponentProps<typeof Card>) {
+    console.log(props);
     const {data: userData, isLoading} = useUserInfoQuery(undefined);
     const [requestRide] = useRequestRideMutation();
-
+    ``;
     const form = useForm<TRequestRideForm>({
         resolver: zodResolver(requestRideFormSchema),
         defaultValues: {
@@ -45,20 +46,14 @@ export function RequestRideForm({...props}: React.ComponentProps<typeof Card>) {
         },
     });
 
-    useEffect(() => {
-        if (userData?.data?._id) {
-            form.setValue('riderId', userData.data._id);
-        }
-    }, [userData, form]);
-
     const onSubmit = async (data: TRequestRideForm) => {
         const toastId = toast.loading('Requesting ride...');
-        const rideInfo: Partial<IRide> = {
-            riderId: userData?.data?._id,
-            pickupLocation: data.pickupLocation,
-            dropoffLocation: data.dropoffLocation,
-            fare: data.fare as number,
-        };
+        // const rideInfo: Partial<IRide> = {
+        //     riderId: userData?.data?._id,
+        //     pickupLocation: data.pickupLocation,
+        //     dropoffLocation: data.dropoffLocation,
+        //     fare: data.fare as number,
+        // };
         try {
             const res = await requestRide(rideInfo);
             console.log(res);
@@ -68,14 +63,22 @@ export function RequestRideForm({...props}: React.ComponentProps<typeof Card>) {
             console.log(error);
         }
     };
+
+    useEffect(() => {
+        if (userData?.data?._id) {
+            form.setValue('riderId', userData.data._id);
+        }
+    }, [userData, form]);
+
     if (isLoading) {
         return <Spinner />;
     }
+
     return (
-        <Card {...props}>
+        <Card className=' flex-1' {...props}>
             <CardHeader>
                 <CardTitle>Enter your trip details below</CardTitle>
-                <CardDescription>
+                <CardDescription className='sr-only'>
                     Enter your information below to create your account
                 </CardDescription>
             </CardHeader>
