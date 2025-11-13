@@ -46,6 +46,7 @@ export default function MapView() {
 
     return (
         <MapContainer
+            className='flex-1'
             style={{height: '600px', width: '100%'}}
             center={center}
             zoom={14}

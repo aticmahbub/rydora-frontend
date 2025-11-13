@@ -12,13 +12,14 @@ export default function RequestRide() {
     const {pickupLocation, driverLocation, dropoffLocation} = useSelector(
         (state: RootState) => state.location,
     );
-    console.log(
-        'location:',
-        location,
+    console.log([
+        'pickupLocation:',
         pickupLocation,
+        'driverLocation:',
         driverLocation,
+        'dropoffLocation:',
         dropoffLocation,
-    );
+    ]);
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
