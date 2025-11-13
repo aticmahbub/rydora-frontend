@@ -27,41 +27,40 @@ import {
 import {useUserInfoQuery} from '@/redux/features/user/user.api';
 import {Spinner} from '@/components/ui/Spinner';
 import {useEffect} from 'react';
-import {toast} from 'sonner';
 import {useRequestRideMutation} from '@/redux/features/ride/ride.api';
 import type {IRide} from '@/types';
+import type {RootState} from '@/redux/store';
+import {useSelector} from 'react-redux';
 
 export function RequestRideForm({...props}: React.ComponentProps<typeof Card>) {
-    console.log(props);
+    const {pickupLocation, dropoffLocation} = useSelector(
+        (state: RootState) => state.location,
+    );
     const {data: userData, isLoading} = useUserInfoQuery(undefined);
     const [requestRide] = useRequestRideMutation();
-    ``;
+
     const form = useForm<TRequestRideForm>({
         resolver: zodResolver(requestRideFormSchema),
         defaultValues: {
             riderId: '',
             pickupLocation: '',
             dropoffLocation: '',
-            fare: '',
+            fare: 0, // should be number, not string
         },
     });
 
     const onSubmit = async (data: TRequestRideForm) => {
-        const toastId = toast.loading('Requesting ride...');
-        // const rideInfo: Partial<IRide> = {
-        //     riderId: userData?.data?._id,
-        //     pickupLocation: data.pickupLocation,
-        //     dropoffLocation: data.dropoffLocation,
-        //     fare: data.fare as number,
-        // };
-        try {
-            const res = await requestRide(rideInfo);
-            console.log(res);
-            toast.success('Ride is requested successfully', {id: toastId});
-        } catch (error) {
-            toast.error('Failed to request ride', {id: toastId});
-            console.log(error);
-        }
+        const rideInfo: Partial<IRide> = {
+            riderId: userData?.data?._id,
+            pickupLocation: pickupLocation
+                ? `${pickupLocation.lat},${pickupLocation.lng}`
+                : data.pickupLocation,
+            dropoffLocation: dropoffLocation
+                ? `${dropoffLocation.lat},${dropoffLocation.lng}`
+                : data.dropoffLocation,
+            fare: data.fare as number,
+        };
+        await requestRide(rideInfo);
     };
 
     useEffect(() => {
@@ -73,7 +72,6 @@ export function RequestRideForm({...props}: React.ComponentProps<typeof Card>) {
     if (isLoading) {
         return <Spinner />;
     }
-
     return (
         <Card className=' flex-1' {...props}>
             <CardHeader>

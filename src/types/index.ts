@@ -18,3 +18,4 @@ export type {ISidebarItems} from './sideBarItems.types';
 export type {TRole} from './role.types';
 
 export type {IRide, IRideResponse} from './ride.types';
+export type {Coordinates} from './location.types';

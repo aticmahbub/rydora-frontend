@@ -9,7 +9,7 @@ import {generateRoutes} from '@/utils/generateRoutes';
 import {adminSidebarItems} from './adminSidebarItems';
 import {withAuth} from '@/utils/withAuth';
 import {userSidebarItems} from './userSidebarItems';
-import {riderSidebarItems} from './riderSideBarItems';
+import {riderSidebarItems} from './riderSidebarItems';
 import {driverSidebarItems} from './driverSidebarItems';
 
 export const router = createBrowserRouter([

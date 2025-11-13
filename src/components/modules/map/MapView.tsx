@@ -7,6 +7,10 @@ import {
 } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import {useDispatch, useSelector} from 'react-redux';
+import type {RootState} from '@/redux/store';
+import {setDropoffLocation} from '@/redux/features/location/location.slice';
+import type {Coordinates} from '@/redux/features/location/location.slice';
 
 const pickupIcon = new L.Icon({
     iconUrl: '/pickup.png',
@@ -18,71 +22,61 @@ const dropoffIcon = new L.Icon({
     iconSize: [32, 32],
 });
 
-interface MapViewProps {
-    pickup: {lat: number; lng: number};
-    dropoff: {lat: number; lng: number};
-    driver?: {lat: number; lng: number};
-    onDropoffSelect?: {lat: number; lng: number};
+const driverIcon = new L.Icon({
+    iconUrl: '/driver.png',
+    iconSize: [32, 32],
+});
+
+function LocationSelector({onSelect}: {onSelect: (pos: Coordinates) => void}) {
+    useMapEvents({
+        click(e) {
+            onSelect({lat: e.latlng.lat, lng: e.latlng.lng});
+        },
+    });
+    return null;
 }
 
-export default function MapView({
-    pickup,
-    dropoff,
-    driver,
-    onDropoffSelect,
-}: MapViewProps) {
-    const center = pickup || {lat: 23.8103, lng: 90.4125};
-    console.log(center, 'center');
+export default function MapView() {
+    const dispatch = useDispatch();
+    const {pickupLocation, driverLocation, dropoffLocation} = useSelector(
+        (state: RootState) => state.location,
+    );
 
-    function LocationSelector({
-        onSelect,
-    }: {
-        onSelect: (pos: {lat: number; lng: number}) => void;
-    }) {
-        useMapEvents({
-            click(e) {
-                onSelect({lat: e.latlng.lat, lng: e.latlng.lng});
-            },
-        });
-        return null;
-    }
+    const center = pickupLocation || {lat: 23.8103, lng: 90.4125};
 
     return (
         <MapContainer
-            style={{height: '600px', width: '700px'}}
+            style={{height: '600px', width: '100%'}}
             center={center}
             zoom={14}
-            // style={{height: '100%', width: '100%'}}
         >
             <TileLayer
                 url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
                 attribution='&copy; <a href="https://osm.org">OpenStreetMap</a>'
             />
 
-            <Marker position={pickup} icon={pickupIcon}>
-                <Popup>Pickup Location</Popup>
-            </Marker>
+            {pickupLocation && (
+                <Marker position={pickupLocation} icon={pickupIcon}>
+                    <Popup>Pickup Location</Popup>
+                </Marker>
+            )}
 
-            {dropoff && (
-                <Marker position={dropoff} icon={dropoffIcon}>
+            {dropoffLocation && (
+                <Marker position={dropoffLocation} icon={dropoffIcon}>
                     <Popup>Dropoff Location</Popup>
                 </Marker>
             )}
 
-            {driver && (
-                <Marker
-                    position={driver}
-                    icon={
-                        new L.Icon({
-                            iconUrl: '/driver.png',
-                            iconSize: [32, 32],
-                        })
-                    }
-                >
+            {driverLocation && (
+                <Marker position={driverLocation} icon={driverIcon}>
                     <Popup>Driver</Popup>
                 </Marker>
             )}
-            {onDropoffSelect && <LocationSelector onSelect={onDropoffSelect} />}
+
+            {/* clicking on map sets dropoff */}
+            <LocationSelector
+                onSelect={(pos) => dispatch(setDropoffLocation(pos))}
+            />
         </MapContainer>
     );
 }

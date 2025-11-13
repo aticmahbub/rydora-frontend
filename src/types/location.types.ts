@@ -1,5 +1,10 @@
 import type {TRideStatus} from '@/constants/rideStatus';
 
+export interface Coordinates {
+    lat: number;
+    lng: number;
+}
+
 export interface IGeoPoint {
     type: 'Point';
     coordinates: [number, number];
