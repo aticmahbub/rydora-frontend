@@ -1,38 +1,46 @@
-import MapView from '@/components/modules/map/MapView';
-import {RequestRideForm} from '@/components/modules/ride/RequestRideForm';
-import {Spinner} from '@/components/ui/Spinner';
+import React, {useEffect} from 'react';
+import {useDispatch} from 'react-redux';
 import {useLocationContext} from '@/contexts/location.context';
-import {useDispatch, useSelector} from 'react-redux';
-import {setPickupLocation} from '@/redux/features/location/location.slice';
-import {useEffect} from 'react';
-import type {AppDispatch, RootState} from '@/redux/store';
+import {
+    setPickupLocation,
+    setDropoffLocation,
+} from '@/redux/features/location/location.slice';
+import type {AppDispatch} from '@/redux/store';
+import {coordinatesToGeoPoint} from '@/utils/locationConverter';
+import {Spinner} from '@/components/ui/Spinner';
+import {RequestRideForm} from '@/components/modules/ride/RequestRideForm';
+import RequestRideMap from '@/components/modules/map/RequestRideMap';
 
 export default function RequestRide() {
-    const {location, loading} = useLocationContext();
-    const {pickupLocation, driverLocation, dropoffLocation} = useSelector(
-        (state: RootState) => state.location,
-    );
-    console.log([
-        'pickupLocation:',
-        pickupLocation,
-        'driverLocation:',
-        driverLocation,
-        'dropoffLocation:',
-        dropoffLocation,
-    ]);
     const dispatch = useDispatch<AppDispatch>();
+    const {location, loading} = useLocationContext();
 
+    // Sync current device location as pickup when available
     useEffect(() => {
-        if (location) dispatch(setPickupLocation(location));
+        if (location) {
+            const geoPoint = coordinatesToGeoPoint(location);
+            dispatch(setPickupLocation(geoPoint));
+        }
     }, [location, dispatch]);
+
+    const handleLocationClick = (lat: number, lng: number) => {
+        console.log('Location selected:', {lat, lng});
+        const geoPoint = coordinatesToGeoPoint({lat, lng});
+        dispatch(setDropoffLocation(geoPoint));
+    };
 
     if (loading || !location) return <Spinner />;
 
     return (
-        <div className='flex border border-red-500 min-h-svh w-full items-center justify-center'>
-            <div className='flex gap-4 w-full border border-amber-400 justify-between'>
-                <RequestRideForm />
-                <MapView />
+        <div className='flex min-h-svh w-full items-center justify-center p-4'>
+            <div className='flex gap-6 w-full max-w-7xl'>
+                <div className='flex-1 max-w-md'>
+                    <RequestRideForm />
+                </div>
+
+                <div className='flex-1'>
+                    <RequestRideMap onLocationClick={handleLocationClick} />
+                </div>
             </div>
         </div>
     );

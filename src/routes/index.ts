@@ -19,11 +19,6 @@ export const router = createBrowserRouter([
         children: [{path: 'about', Component: About}],
     },
     {
-        path: '/ride',
-        Component: DashboardLayout,
-        children: [...generateRoutes(riderSidebarItems)],
-    },
-    {
         path: '/admin',
         Component: DashboardLayout,
         children: [...generateRoutes(adminSidebarItems)],

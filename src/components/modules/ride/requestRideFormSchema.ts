@@ -1,12 +1,14 @@
 import {z} from 'zod';
 
 export const requestRideFormSchema = z.object({
-    riderId: z.string(),
-    pickupLocation: z.string().min(1, 'Pickup location is required'),
-    dropoffLocation: z.string().min(1, 'Destination is required'),
-    fare: z.coerce
-        .number({error: 'Fare must be a number'})
-        .positive('Fare must be positive'),
+    riderId: z.string().min(1, 'Rider ID is required'),
+    pickupLocation: z
+        .string()
+        .regex(/^-?\d+\.?\d*,-?\d+\.?\d*$/, 'Must be in format: lat,lng'),
+    dropoffLocation: z
+        .string()
+        .regex(/^-?\d+\.?\d*,-?\d+\.?\d*$/, 'Must be in format: lat,lng'),
+    fare: z.number().min(1, 'Fare must be at least 1'),
 });
 
-export type TRequestRideForm = z.input<typeof requestRideFormSchema>;
+export type TRequestRideForm = z.infer<typeof requestRideFormSchema>;

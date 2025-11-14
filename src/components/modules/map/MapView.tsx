@@ -1,82 +1,67 @@
-import {
-    MapContainer,
-    TileLayer,
-    Marker,
-    Popup,
-    useMapEvents,
-} from 'react-leaflet';
-import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import {useDispatch, useSelector} from 'react-redux';
+import {MapContainer, TileLayer} from 'react-leaflet';
+import {MapController} from './MapController';
+import {useLocationContext} from '@/contexts/location.context';
+import {useSelector} from 'react-redux';
 import type {RootState} from '@/redux/store';
-import {setDropoffLocation} from '@/redux/features/location/location.slice';
-import type {Coordinates} from '@/redux/features/location/location.slice';
+import type {IRide} from '@/types/location.types';
+import {geoPointToCoordinates} from '@/utils/geoPointToCoordinates';
+import {UserLocationMarker} from './UserLocationMarker';
+import {RideMarkers} from './RideMarkers';
+import {DropoffMarker} from './DropoffMarker';
 
-const pickupIcon = new L.Icon({
-    iconUrl: '/pickup.png',
-    iconSize: [32, 32],
-});
-
-const dropoffIcon = new L.Icon({
-    iconUrl: '/dropoff.png',
-    iconSize: [32, 32],
-});
-
-const driverIcon = new L.Icon({
-    iconUrl: '/driver.png',
-    iconSize: [32, 32],
-});
-
-function LocationSelector({onSelect}: {onSelect: (pos: Coordinates) => void}) {
-    useMapEvents({
-        click(e) {
-            onSelect({lat: e.latlng.lat, lng: e.latlng.lng});
-        },
-    });
-    return null;
+interface MapViewProps {
+    rides: IRide[];
+    selectedRideId: string | null;
+    onSelectRide: (id: string) => void;
+    onLocationClick?: (lat: number, lng: number) => void;
+    center?: {lat: number; lng: number};
+    zoom?: number;
+    className?: string;
 }
 
-export default function MapView() {
-    const dispatch = useDispatch();
-    const {pickupLocation, driverLocation, dropoffLocation} = useSelector(
-        (state: RootState) => state.location,
-    );
+export default function MapView({
+    rides,
+    selectedRideId,
+    onSelectRide,
+    onLocationClick,
+    center,
+    zoom = 13,
+    className = 'h-[80vh] flex-1 rounded-xl shadow-md z-0',
+}: MapViewProps) {
+    const {location, loading} = useLocationContext();
+    const {dropoffLocation} = useSelector((state: RootState) => state.location);
 
-    const center = pickupLocation || {lat: 23.8103, lng: 90.4125};
+    // Calculate default center
+    const defaultCenter =
+        center ||
+        location ||
+        (rides.length && rides[0].pickupLocation?.coordinates?.length === 2
+            ? geoPointToCoordinates(rides[0].pickupLocation)
+            : {lat: 23.8103, lng: 90.4125});
 
     return (
         <MapContainer
-            className='flex-1'
-            style={{height: '600px', width: '100%'}}
-            center={center}
-            zoom={14}
+            center={[defaultCenter.lat, defaultCenter.lng]}
+            zoom={zoom}
+            className={className}
         >
             <TileLayer
                 url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-                attribution='&copy; <a href="https://osm.org">OpenStreetMap</a>'
+                attribution='&copy; OpenStreetMap contributors'
             />
 
-            {pickupLocation && (
-                <Marker position={pickupLocation} icon={pickupIcon}>
-                    <Popup>Pickup Location</Popup>
-                </Marker>
-            )}
-
-            {dropoffLocation && (
-                <Marker position={dropoffLocation} icon={dropoffIcon}>
-                    <Popup>Dropoff Location</Popup>
-                </Marker>
-            )}
-
-            {driverLocation && (
-                <Marker position={driverLocation} icon={driverIcon}>
-                    <Popup>Driver</Popup>
-                </Marker>
-            )}
-
-            {/* clicking on map sets dropoff */}
-            <LocationSelector
-                onSelect={(pos) => dispatch(setDropoffLocation(pos))}
+            <UserLocationMarker location={location} loading={loading} />
+            <RideMarkers
+                rides={rides}
+                selectedRideId={selectedRideId}
+                onRideSelect={onSelectRide}
+            />
+            <DropoffMarker location={dropoffLocation} />
+            <MapController
+                rides={rides}
+                selectedRideId={selectedRideId}
+                onLocationClick={onLocationClick}
             />
         </MapContainer>
     );

@@ -14,14 +14,14 @@ export const rideApi = baseApi.injectEndpoints({
                 }),
             },
         ),
-        // userInfo: builder.query({
-        //     query: () => ({
-        //         url: '/user/info',
-        //         method: 'GET',
-        //     }),
-        //     providesTags: ['USER'],
-        // }),
+        findRide: builder.query({
+            query: () => ({
+                url: '/ride/find',
+                method: 'GET',
+            }),
+            providesTags: ['RIDE'],
+        }),
     }),
 });
 
-export const {useRequestRideMutation} = rideApi;
+export const {useRequestRideMutation, useFindRideQuery} = rideApi;
