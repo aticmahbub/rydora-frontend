@@ -9,15 +9,10 @@ import {
 import {Field, FieldGroup} from '@/components/ui/field';
 import {Input} from '@/components/ui/input';
 import {useForm} from 'react-hook-form';
-import {
-    requestRideFormSchema,
-    type TRequestRideForm,
-} from './requestRideFormSchema';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -25,12 +20,19 @@ import {
 } from '@/components/ui/form';
 import {useUserInfoQuery} from '@/redux/features/user/user.api';
 import {Spinner} from '@/components/ui/Spinner';
-import {useEffect} from 'react';
 import {useRequestRideMutation} from '@/redux/features/ride/ride.api';
 import type {IRide} from '@/types';
 import type {RootState} from '@/redux/store';
 import {useSelector} from 'react-redux';
-import {geoPointToCoordinates} from '@/utils/locationConverter';
+import {LocationDisplay} from '../map/LocationDisplay';
+import z from 'zod';
+
+// Simplified schema - only fare is needed
+const requestRideFormSchema = z.object({
+    fare: z.number().min(1, 'Fare must be at least 1'),
+});
+
+type TRequestRideForm = z.infer<typeof requestRideFormSchema>;
 
 export function RequestRideForm({...props}: React.ComponentProps<typeof Card>) {
     const {pickupLocation, dropoffLocation} = useSelector(
@@ -42,61 +44,35 @@ export function RequestRideForm({...props}: React.ComponentProps<typeof Card>) {
     const form = useForm<TRequestRideForm>({
         resolver: zodResolver(requestRideFormSchema),
         defaultValues: {
-            riderId: userData?.data?._id ?? '',
-            pickupLocation: '',
-            dropoffLocation: '',
             fare: 0,
         },
     });
 
-    // Update form when pickupLocation changes in Redux
-    useEffect(() => {
-        if (pickupLocation) {
-            const coords = geoPointToCoordinates(pickupLocation);
-            form.setValue('pickupLocation', `${coords.lat},${coords.lng}`);
-        }
-    }, [pickupLocation, form]);
-
-    // Update form when dropoffLocation changes in Redux
-    useEffect(() => {
-        if (dropoffLocation) {
-            const coords = geoPointToCoordinates(dropoffLocation);
-            form.setValue('dropoffLocation', `${coords.lat},${coords.lng}`);
-        }
-    }, [dropoffLocation, form]);
-
-    // Set riderId when user data is available
-    useEffect(() => {
-        if (userData?.data?._id) {
-            form.setValue('riderId', userData.data._id);
-        }
-    }, [userData, form]);
-
     const onSubmit = async (data: TRequestRideForm) => {
-        if (!userData?.data?._id) return;
+        if (!userData?.data?._id || !pickupLocation || !dropoffLocation) {
+            console.error('Missing required data');
+            return;
+        }
 
         const rideInfo: Partial<IRide> = {
             riderId: userData.data._id,
-            pickupLocation: {
-                type: 'Point',
-                coordinates: data.pickupLocation
-                    .split(',')
-                    .map(Number)
-                    .reverse() as [number, number],
-            },
-            dropoffLocation: {
-                type: 'Point',
-                coordinates: data.dropoffLocation
-                    .split(',')
-                    .map(Number)
-                    .reverse() as [number, number],
-            },
+            pickupLocation, // Directly from Redux
+            dropoffLocation, // Directly from Redux
             fare: Number(data.fare),
         };
 
-        const res = await requestRide(rideInfo);
-        console.log(res);
+        try {
+            const res = await requestRide(rideInfo);
+            console.log('Ride requested:', res);
+            // Optional: Reset form or show success message
+            form.reset();
+        } catch (error) {
+            console.error('Failed to request ride:', error);
+        }
     };
+
+    // Check if form can be submitted
+    const canSubmit = pickupLocation && dropoffLocation;
 
     if (isLoading) {
         return <Spinner />;
@@ -105,68 +81,50 @@ export function RequestRideForm({...props}: React.ComponentProps<typeof Card>) {
     return (
         <Card className='flex-1' {...props}>
             <CardHeader>
-                <CardTitle>Enter your trip details below</CardTitle>
-                <CardDescription className='sr-only'>
-                    Enter your information below to create your account
+                <CardTitle>Request a Ride</CardTitle>
+                <CardDescription>
+                    Set locations on the map and enter fare
                 </CardDescription>
             </CardHeader>
             <CardContent>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)}>
-                        <FieldGroup>
-                            <FormField
-                                control={form.control}
-                                name='pickupLocation'
-                                render={({field}) => (
-                                    <FormItem>
-                                        <FormLabel>Pickup Location</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                type='text'
-                                                placeholder='Pickup Location (lat,lng)'
-                                                {...field}
-                                                readOnly // Make it read-only since it comes from map
-                                                className='bg-gray-50'
-                                            />
-                                        </FormControl>
-                                        <FormDescription>
-                                            Click on the map to set pickup
-                                            location
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
+                        <FieldGroup className='space-y-4'>
+                            {/* Pickup Location Display */}
+                            <div className='space-y-2'>
+                                <FormLabel>Pickup Location</FormLabel>
+                                <LocationDisplay
+                                    location={pickupLocation}
+                                    placeholder='Click on the map to set pickup location'
+                                />
+                                {!pickupLocation && (
+                                    <p className='text-sm text-amber-600'>
+                                        Click on the map to set pickup location
+                                    </p>
                                 )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name='dropoffLocation'
-                                render={({field}) => (
-                                    <FormItem>
-                                        <FormLabel>
-                                            Destination Location
-                                        </FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                type='text'
-                                                placeholder='Destination Location (lat,lng)'
-                                                {...field}
-                                                readOnly // Make it read-only since it comes from map
-                                                className='bg-gray-50'
-                                            />
-                                        </FormControl>
-                                        <FormDescription>
-                                            Click on the map to set destination
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
+                            </div>
+
+                            {/* Dropoff Location Display */}
+                            <div className='space-y-2'>
+                                <FormLabel>Destination</FormLabel>
+                                <LocationDisplay
+                                    location={dropoffLocation}
+                                    placeholder='Click on the map to set destination'
+                                />
+                                {!dropoffLocation && (
+                                    <p className='text-sm text-amber-600'>
+                                        Click on the map to set destination
+                                    </p>
                                 )}
-                            />
+                            </div>
+
+                            {/* Fare Input - Only input field needed */}
                             <FormField
                                 control={form.control}
                                 name='fare'
                                 render={({field}) => (
                                     <FormItem>
-                                        <FormLabel>Fare</FormLabel>
+                                        <FormLabel>Fare ($)</FormLabel>
                                         <FormControl>
                                             <Input
                                                 {...field}
@@ -175,21 +133,28 @@ export function RequestRideForm({...props}: React.ComponentProps<typeof Card>) {
                                                         Number(e.target.value),
                                                     )
                                                 }
-                                                value={field.value}
+                                                value={field.value || ''}
                                                 type='number'
-                                                placeholder='Fare'
+                                                placeholder='Enter fare amount'
+                                                min='1'
                                             />
                                         </FormControl>
-                                        <FormDescription className='sr-only'>
-                                            Fare
-                                        </FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
+
                             <FieldGroup>
                                 <Field>
-                                    <Button type='submit'>Request Ride</Button>
+                                    <Button
+                                        type='submit'
+                                        disabled={!canSubmit}
+                                        className='w-full'
+                                    >
+                                        {canSubmit
+                                            ? 'Request Ride'
+                                            : 'Set Locations First'}
+                                    </Button>
                                 </Field>
                             </FieldGroup>
                         </FieldGroup>
