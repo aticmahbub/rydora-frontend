@@ -27,14 +27,10 @@ import type {RootState} from '@/redux/store';
 import {useSelector} from 'react-redux';
 import {LocationDisplay} from '../map/LocationDisplay';
 import {formatDistance} from '@/utils/rideCalculator';
-import {z} from 'zod';
-
-// Simplified schema - only fare is needed
-const requestRideFormSchema = z.object({
-    fare: z.number().min(1, 'Fare must be at least 1'),
-});
-
-type TRequestRideForm = z.infer<typeof requestRideFormSchema>;
+import {
+    requestRideFormSchema,
+    type TRequestRideForm,
+} from './requestRideFormSchema';
 
 interface RequestRideFormProps extends React.ComponentProps<typeof Card> {
     routeInfo?: {distance: number; fare: number};
@@ -75,11 +71,13 @@ export function RequestRideForm({routeInfo, ...props}: RequestRideFormProps) {
             fare: Number(data.fare),
             distance: routeInfo?.distance,
         };
+        console.log('Submitting ride info:', rideInfo);
 
         try {
             const res = await requestRide(rideInfo);
             console.log('Ride requested:', res);
             form.reset();
+            alert('Ride requested successfully!');
         } catch (error) {
             console.error('Failed to request ride:', error);
         }

@@ -4,18 +4,12 @@ import DriverProfile from '@/pages/driver/DriverProfile';
 import DriverRideHistory from '@/pages/driver/DriverRideHistory';
 import ManageRides from '@/pages/driver/ManageRides';
 import FindRide from '@/pages/ride/FindRide';
-import CreateDriver from '@/pages/rider/CreateDriver';
 import type {ISidebarItems} from '@/types';
 
 export const driverSidebarItems: ISidebarItems[] = [
     {
         title: 'Driver sidebar',
         items: [
-            {
-                title: 'Create Driver',
-                url: '/driver/create',
-                component: CreateDriver,
-            },
             {
                 title: 'Find rides',
                 url: '/driver/ride',

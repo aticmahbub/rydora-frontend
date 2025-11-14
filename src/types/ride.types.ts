@@ -8,6 +8,8 @@ export interface IRide {
     driverId?: string;
     // vehicleId?: Types.ObjectId;
 
+    currentLocation: IGeoPoint;
+
     pickupLocation: IGeoPoint;
 
     dropoffLocation: IGeoPoint;

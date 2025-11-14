@@ -1,4 +1,3 @@
-import CreateDriver from '@/pages/rider/CreateDriver';
 import RequestRide from '@/pages/rider/RequestRide';
 import RideDetails from '@/pages/rider/RideDetails';
 import RideHistory from '@/pages/rider/RideHistory';
@@ -10,11 +9,6 @@ export const riderSidebarItems: ISidebarItems[] = [
     {
         title: 'Rider Features',
         items: [
-            {
-                title: 'Create Driver',
-                url: '/rider/create',
-                component: CreateDriver,
-            },
             {
                 title: 'Request Ride',
                 url: '/rider/request',

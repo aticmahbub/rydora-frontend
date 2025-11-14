@@ -37,6 +37,7 @@ export default function Navbar() {
 
     const {data} = useUserInfoQuery(undefined);
     const [logout] = useLogoutMutation();
+    console.log(data?.data);
     console.log(data?.data?.role);
 
     const navLinks = [
