@@ -1,15 +1,11 @@
-import React, {useEffect} from 'react';
+import {useEffect} from 'react';
 import {useDispatch} from 'react-redux';
 import {useLocationContext} from '@/contexts/location.context';
-import {
-    setPickupLocation,
-    setDropoffLocation,
-} from '@/redux/features/location/location.slice';
+import {setLocationWithGeocoding} from '@/redux/features/location/location.slice';
 import type {AppDispatch} from '@/redux/store';
-import {coordinatesToGeoPoint} from '@/utils/locationConverter';
 import {Spinner} from '@/components/ui/Spinner';
 import {RequestRideForm} from '@/components/modules/ride/RequestRideForm';
-import RequestRideMap from '@/components/modules/map/RequestRideMap';
+import MapView from '@/components/modules/map/MapView';
 
 export default function RequestRide() {
     const dispatch = useDispatch<AppDispatch>();
@@ -18,15 +14,17 @@ export default function RequestRide() {
     // Sync current device location as pickup when available
     useEffect(() => {
         if (location) {
-            const geoPoint = coordinatesToGeoPoint(location);
-            dispatch(setPickupLocation(geoPoint));
+            dispatch(
+                setLocationWithGeocoding({
+                    coordinates: location,
+                    type: 'pickup',
+                }),
+            );
         }
     }, [location, dispatch]);
 
-    const handleLocationClick = (lat: number, lng: number) => {
-        console.log('Location selected:', {lat, lng});
-        const geoPoint = coordinatesToGeoPoint({lat, lng});
-        dispatch(setDropoffLocation(geoPoint));
+    const handleLocationClick = (lat: number, lng: number, address: string) => {
+        console.log('Location selected:', {lat, lng, address});
     };
 
     if (loading || !location) return <Spinner />;
@@ -39,7 +37,14 @@ export default function RequestRide() {
                 </div>
 
                 <div className='flex-1'>
-                    <RequestRideMap onLocationClick={handleLocationClick} />
+                    <MapView
+                        rides={[]}
+                        selectedRideId={null}
+                        onSelectRide={() => {}}
+                        onLocationClick={handleLocationClick}
+                        center={location}
+                        className='h-[600px] rounded-xl'
+                    />
                 </div>
             </div>
         </div>

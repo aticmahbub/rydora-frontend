@@ -5,17 +5,16 @@ import {useLocationContext} from '@/contexts/location.context';
 import {useSelector} from 'react-redux';
 import type {RootState} from '@/redux/store';
 import type {IRide} from '@/types/location.types';
-
-import {UserLocationMarker} from './markers/UserLocationMarker';
-import {RideMarkers} from './markers/RideMarkers';
 import {DropoffMarker} from './DropoffMarker';
 import {geoPointToCoordinates} from '@/utils/locationConverter';
+import {UserLocationMarker} from './markers/UserLocationMarker';
+import {RideMarkers} from './markers/RideMarkers';
 
 interface MapViewProps {
     rides: IRide[];
     selectedRideId: string | null;
     onSelectRide: (id: string) => void;
-    onLocationClick?: (lat: number, lng: number) => void;
+    onLocationClick?: (lat: number, lng: number, address: string) => void; // Updated: added address parameter
     center?: {lat: number; lng: number};
     zoom?: number;
     className?: string;

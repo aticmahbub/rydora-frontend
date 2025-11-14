@@ -1,6 +1,11 @@
-import type {IGeoPoint, Coordinates} from '@/types/location.types';
+import type {IGeoPoint, ICoordinates} from '@/types/location.types';
 import {coordinatesToGeoPoint, isCoordinates} from '@/utils/locationConverter';
-import {createSlice, type PayloadAction} from '@reduxjs/toolkit';
+import {getAddressFromCoordinates} from '@/utils/reverseGeocoding';
+import {
+    createAsyncThunk,
+    createSlice,
+    type PayloadAction,
+} from '@reduxjs/toolkit';
 
 interface LocationState {
     currentRide: IGeoPoint | null;
@@ -18,30 +23,48 @@ const initialState: LocationState = {
     selectedLocation: null,
 };
 
+// Thunk to set location with geocoding
+const setLocationWithGeocoding = createAsyncThunk(
+    'location/setWithGeocoding',
+    async (
+        {
+            coordinates,
+            type,
+        }: {coordinates: ICoordinates; type: 'pickup' | 'dropoff'},
+        {dispatch},
+    ) => {
+        // Get address from coordinates
+        const address = await getAddressFromCoordinates(coordinates);
+
+        // Create geo point with address
+        const geoPoint = coordinatesToGeoPoint(coordinates, address);
+
+        // Dispatch appropriate action based on type
+        if (type === 'pickup') {
+            dispatch(setPickupLocation(geoPoint));
+        } else {
+            dispatch(setDropoffLocation(geoPoint));
+        }
+
+        return {geoPoint, address};
+    },
+);
+
 const locationSlice = createSlice({
     name: 'location',
     initialState,
     reducers: {
-        setPickupLocation: (
-            state,
-            action: PayloadAction<IGeoPoint | Coordinates>,
-        ) => {
+        setPickupLocation: (state, action: PayloadAction<IGeoPoint>) => {
             state.pickupLocation = isCoordinates(action.payload)
                 ? coordinatesToGeoPoint(action.payload)
                 : action.payload;
         },
-        setDropoffLocation: (
-            state,
-            action: PayloadAction<IGeoPoint | Coordinates>,
-        ) => {
+        setDropoffLocation: (state, action: PayloadAction<IGeoPoint>) => {
             state.dropoffLocation = isCoordinates(action.payload)
                 ? coordinatesToGeoPoint(action.payload)
                 : action.payload;
         },
-        setDriverLocation: (
-            state,
-            action: PayloadAction<IGeoPoint | Coordinates>,
-        ) => {
+        setDriverLocation: (state, action: PayloadAction<IGeoPoint>) => {
             state.driverLocation = isCoordinates(action.payload)
                 ? coordinatesToGeoPoint(action.payload)
                 : action.payload;
@@ -68,4 +91,5 @@ export const {
     resetLocations,
 } = locationSlice.actions;
 
+export {setLocationWithGeocoding};
 export default locationSlice.reducer;

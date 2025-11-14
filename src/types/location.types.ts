@@ -1,6 +1,6 @@
 import type {TRideStatus} from '@/constants/rideStatus';
 
-export interface Coordinates {
+export interface ICoordinates {
     lat: number;
     lng: number;
 }

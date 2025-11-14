@@ -2,11 +2,13 @@ import {configureStore} from '@reduxjs/toolkit';
 import {baseApi} from './baseApi';
 import {setupListeners} from '@reduxjs/toolkit/query';
 import locationReducer from './features/location/location.slice';
+import geocodingReducer from './features/geocoding/geocoding';
 
 export const store = configureStore({
     reducer: {
         [baseApi.reducerPath]: baseApi.reducer,
         location: locationReducer,
+        geocoding: geocodingReducer,
     },
 
     middleware: (getDefaultMiddleware) =>

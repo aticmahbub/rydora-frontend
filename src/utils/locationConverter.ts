@@ -1,8 +1,8 @@
-import type {Coordinates, IGeoPoint} from '@/types/location.types';
+import type {ICoordinates, IGeoPoint} from '@/types/location.types';
 
-/* Convert Coordinates (lat/lng) to IGeoPoint */
+/* Convert ICoordinates (lat/lng) to IGeoPoint */
 export function coordinatesToGeoPoint(
-    coords: Coordinates,
+    coords: ICoordinates,
     address?: string,
 ): IGeoPoint {
     return {
@@ -13,9 +13,9 @@ export function coordinatesToGeoPoint(
 }
 
 /**
- * Convert IGeoPoint to Coordinates (lat/lng)
+ * Convert IGeoPoint to ICoordinates (lat/lng)
  */
-export function geoPointToCoordinates(geoPoint: IGeoPoint): Coordinates {
+export function geoPointToCoordinates(geoPoint: IGeoPoint): ICoordinates {
     if (!geoPoint.coordinates || geoPoint.coordinates.length < 2) {
         throw new Error('Invalid GeoPoint coordinates');
     }
@@ -26,9 +26,9 @@ export function geoPointToCoordinates(geoPoint: IGeoPoint): Coordinates {
 }
 
 /**
- * Check if object is Coordinates (has lat/lng)
+ * Check if object is ICoordinates (has lat/lng)
  */
-export function isCoordinates(obj: any): obj is Coordinates {
+export function isCoordinates(obj: any): obj is ICoordinates {
     return obj && typeof obj.lat === 'number' && typeof obj.lng === 'number';
 }
 
