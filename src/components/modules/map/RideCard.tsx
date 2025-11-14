@@ -1,6 +1,7 @@
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
-import {geoPointToCoordinates} from '@/utils/geoPointToCoordinates';
+
 import type {IRide} from '@/types/location.types';
+import {geoPointToCoordinates} from '@/utils/locationConverter';
 
 interface RideCardProps {
     ride: IRide;

@@ -3,7 +3,7 @@ import {useSelector} from 'react-redux';
 import type {RootState} from '@/redux/store';
 import {useLocationContext} from '@/contexts/location.context';
 import {MapController} from './MapController';
-import {UserLocationMarker} from './UserLocationMarker';
+import {UserLocationMarker} from './markers/UserLocationMarker';
 import {pickupIcon, dropoffIcon} from './MapIcons';
 import {Spinner} from '@/components/ui/Spinner';
 

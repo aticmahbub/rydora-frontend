@@ -1,12 +1,11 @@
-import React from 'react';
 import {Marker, Popup, Polyline} from 'react-leaflet';
-import {geoPointToCoordinates} from '@/utils/geoPointToCoordinates';
 import {
     pickupIcon,
     pickupIconHighlighted,
     dropoffIconHighlighted,
-} from './MapIcons';
+} from '../MapIcons';
 import type {IRide} from '@/types/location.types';
+import {geoPointToCoordinates} from '@/utils/locationConverter';
 
 interface RideMarkersProps {
     rides: IRide[];

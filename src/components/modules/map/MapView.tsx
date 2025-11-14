@@ -5,10 +5,11 @@ import {useLocationContext} from '@/contexts/location.context';
 import {useSelector} from 'react-redux';
 import type {RootState} from '@/redux/store';
 import type {IRide} from '@/types/location.types';
-import {geoPointToCoordinates} from '@/utils/geoPointToCoordinates';
-import {UserLocationMarker} from './UserLocationMarker';
-import {RideMarkers} from './RideMarkers';
+
+import {UserLocationMarker} from './markers/UserLocationMarker';
+import {RideMarkers} from './markers/RideMarkers';
 import {DropoffMarker} from './DropoffMarker';
+import {geoPointToCoordinates} from '@/utils/locationConverter';
 
 interface MapViewProps {
     rides: IRide[];

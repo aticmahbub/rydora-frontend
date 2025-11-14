@@ -30,7 +30,7 @@ import {useRequestRideMutation} from '@/redux/features/ride/ride.api';
 import type {IRide} from '@/types';
 import type {RootState} from '@/redux/store';
 import {useSelector} from 'react-redux';
-import {geoPointToCoordinates} from '@/utils/geoPointToCoordinates';
+import {geoPointToCoordinates} from '@/utils/locationConverter';
 
 export function RequestRideForm({...props}: React.ComponentProps<typeof Card>) {
     const {pickupLocation, dropoffLocation} = useSelector(

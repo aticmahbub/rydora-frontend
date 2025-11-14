@@ -4,7 +4,8 @@ import {Card, CardContent} from '@/components/ui/card';
 import {Spinner} from '@/components/ui/Spinner';
 import {useFindRideQuery} from '@/redux/features/ride/ride.api';
 import type {IRide} from '@/types';
-import {geoPointToCoordinates} from '@/utils/geoPointToCoordinates';
+import {geoPointToCoordinates} from '@/utils/locationConverter';
+
 import {useState} from 'react';
 
 export default function FindRide() {
