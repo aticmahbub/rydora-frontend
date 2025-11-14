@@ -32,6 +32,11 @@ export default function MapView({
     const {location, loading} = useLocationContext();
     const {dropoffLocation} = useSelector((state: RootState) => state.location);
 
+    // Convert IGeoPoint to Coordinates for DropoffMarker
+    const dropoffCoords = dropoffLocation
+        ? geoPointToCoordinates(dropoffLocation)
+        : null;
+
     // Calculate default center
     const defaultCenter =
         center ||
@@ -57,7 +62,7 @@ export default function MapView({
                 selectedRideId={selectedRideId}
                 onRideSelect={onSelectRide}
             />
-            <DropoffMarker location={dropoffLocation} />
+            <DropoffMarker location={dropoffCoords} />
             <MapController
                 rides={rides}
                 selectedRideId={selectedRideId}

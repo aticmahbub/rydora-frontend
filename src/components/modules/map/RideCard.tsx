@@ -1,4 +1,3 @@
-import React from 'react';
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 import {geoPointToCoordinates} from '@/utils/geoPointToCoordinates';
 import type {IRide} from '@/types/location.types';
@@ -38,7 +37,9 @@ export function RideCard({ride, isSelected, onSelect}: RideCardProps) {
                 </p>
                 <p>
                     <strong>Requested:</strong>{' '}
-                    {new Date(ride.createdAt).toLocaleString()}
+                    {ride.createdAt
+                        ? new Date(ride.createdAt).toLocaleString()
+                        : 'Not available'}
                 </p>
             </CardContent>
         </Card>

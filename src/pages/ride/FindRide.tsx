@@ -3,6 +3,7 @@ import {RideList} from '@/components/modules/map/RideList';
 import {Card, CardContent} from '@/components/ui/card';
 import {Spinner} from '@/components/ui/Spinner';
 import {useFindRideQuery} from '@/redux/features/ride/ride.api';
+import type {IRide} from '@/types';
 import {geoPointToCoordinates} from '@/utils/geoPointToCoordinates';
 import {useState} from 'react';
 
@@ -27,7 +28,8 @@ export default function FindRide() {
 
     // Calculate center for map
     const validRide = rides.find(
-        (r: any) => r?.pickupLocation?.coordinates?.[0] !== undefined,
+        (r: Partial<IRide>) =>
+            r?.pickupLocation?.coordinates?.[0] !== undefined,
     );
 
     const center = validRide
