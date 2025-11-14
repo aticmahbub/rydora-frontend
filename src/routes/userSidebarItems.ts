@@ -1,14 +1,14 @@
-import UserBookings from '@/pages/user/UserBookings';
+import CreateDriver from '@/pages/CreateDriver';
 import type {ISidebarItems} from '@/types';
 
 export const userSidebarItems: ISidebarItems[] = [
     {
-        title: 'History',
+        title: 'Account Settings',
         items: [
             {
-                title: 'Bookings',
-                url: 'user/booking',
-                component: UserBookings,
+                title: 'Become a Driver',
+                url: '/user/signup-as-driver',
+                component: CreateDriver,
             },
         ],
     },

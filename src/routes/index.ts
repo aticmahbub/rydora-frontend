@@ -11,6 +11,7 @@ import {withAuth} from '@/utils/withAuth';
 import {userSidebarItems} from './userSidebarItems';
 import {riderSidebarItems} from './riderSidebarItems';
 import {driverSidebarItems} from './driverSidebarItems';
+import RegisterDriver from '@/pages/RegisterDriver';
 
 export const router = createBrowserRouter([
     {
@@ -44,5 +45,6 @@ export const router = createBrowserRouter([
 
     {path: '/login', Component: LoginPage},
     {path: '/registration', Component: RegistrationPage},
+    {path: '/driver-registration', Component: RegisterDriver},
     {path: '/verify', Component: VerifyPage},
 ]);

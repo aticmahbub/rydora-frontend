@@ -46,6 +46,23 @@ export function RegistrationForm({
         },
     });
 
+    // const onSubmit = async (data: z.input<typeof registrationFormSchema>) => {
+    //     const toastId = toast.loading('Creating account...');
+    //     const userInfo = {
+    //         name: data.name,
+    //         email: data.email,
+    //         NID: data.NID as number,
+    //         password: data.confirmPassword,
+    //         role: data.role,
+    //     };
+    //     try {
+    //         const res = await register(userInfo).unwrap();
+    //         if (res.success) {
+    //             toast.success('Account is created successfully', {id: toastId});
+    //             navigate('/verify', {state: {email: data.email}});
+    //         } else {
+    //             toast.error('Failed to create account', {id: toastId});
+    //         }
     const onSubmit = async (data: z.input<typeof registrationFormSchema>) => {
         const toastId = toast.loading('Creating account...');
         const userInfo = {
@@ -59,11 +76,19 @@ export function RegistrationForm({
             const res = await register(userInfo).unwrap();
             if (res.success) {
                 toast.success('Account is created successfully', {id: toastId});
-                if (data.role === role.DRIVER) {
-                    navigate('/create-driver');
+
+                if (res.data.role === role.DRIVER) {
+                    navigate('/driver-registration', {
+                        state: {
+                            email: data.email,
+                            nid: data.NID,
+                            name: data.name,
+                        },
+                    });
                     return;
                 }
-                navigate('/verify', {state: {email: data.email}});
+
+                navigate('/', {state: {email: data.email}});
             } else {
                 toast.error('Failed to create account', {id: toastId});
             }
