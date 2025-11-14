@@ -1,4 +1,4 @@
-import {useEffect} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {useDispatch} from 'react-redux';
 import {useLocationContext} from '@/contexts/location.context';
 import {setLocationWithGeocoding} from '@/redux/features/location/location.slice';
@@ -10,6 +10,7 @@ import MapView from '@/components/modules/map/MapView';
 export default function RequestRide() {
     const dispatch = useDispatch<AppDispatch>();
     const {location, loading} = useLocationContext();
+    const [routeInfo, setRouteInfo] = useState({distance: 0, fare: 0});
 
     // Sync current device location as pickup when available
     useEffect(() => {
@@ -23,9 +24,17 @@ export default function RequestRide() {
         }
     }, [location, dispatch]);
 
-    const handleLocationClick = (lat: number, lng: number, address: string) => {
-        console.log('Location selected:', {lat, lng, address});
-    };
+    const handleLocationClick = useCallback(
+        (lat: number, lng: number, address: string) => {
+            console.log('Location selected:', {lat, lng, address});
+        },
+        [],
+    );
+
+    // Stable callback to prevent infinite loops
+    const handleRouteUpdate = useCallback((distance: number, fare: number) => {
+        setRouteInfo({distance, fare});
+    }, []);
 
     if (loading || !location) return <Spinner />;
 
@@ -33,7 +42,10 @@ export default function RequestRide() {
         <div className='flex min-h-svh w-full items-center justify-center p-4'>
             <div className='flex gap-6 w-full max-w-7xl'>
                 <div className='flex-1 max-w-md'>
-                    <RequestRideForm />
+                    <RequestRideForm
+                        routeInfo={routeInfo}
+                        onRouteUpdate={handleRouteUpdate}
+                    />
                 </div>
 
                 <div className='flex-1'>
@@ -42,6 +54,7 @@ export default function RequestRide() {
                         selectedRideId={null}
                         onSelectRide={() => {}}
                         onLocationClick={handleLocationClick}
+                        onRouteUpdate={handleRouteUpdate}
                         center={location}
                         className='h-[600px] rounded-xl'
                     />

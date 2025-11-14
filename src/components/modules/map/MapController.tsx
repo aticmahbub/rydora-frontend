@@ -13,7 +13,7 @@ import type {AppDispatch} from '@/redux/store';
 interface MapControllerProps {
     rides: IRide[];
     selectedRideId: string | null;
-    onLocationClick?: (lat: number, lng: number, address: string) => void; // Fixed: added address parameter
+    onLocationClick?: (lat: number, lng: number, address: string) => void;
 }
 
 export function MapController({
@@ -26,10 +26,13 @@ export function MapController({
     const map = useMapEvents({
         async click(e) {
             const {lat, lng} = e.latlng;
-            map.flyTo([lat, lng], map.getZoom());
+
+            // Don't fly to the clicked location immediately
+            // Let the parent component handle the center logic
+            console.log('Map clicked:', {lat, lng});
 
             try {
-                // Use the new geocoding action - this will handle both setting location and geocoding
+                // Use the new geocoding action
                 const result = await dispatch(
                     setLocationWithGeocoding({
                         coordinates: {lat, lng},
@@ -58,8 +61,7 @@ export function MapController({
             const pickupGeo = selected.pickupLocation;
             const dropoffGeo = selected.dropoffLocation;
 
-            // Note: You might want to update this to use setLocationWithGeocoding too
-            // For now, keeping the existing behavior for selected rides
+            // Use the new geocoding action for selected rides too
             dispatch(
                 setLocationWithGeocoding({
                     coordinates: geoPointToCoordinates(dropoffGeo),
@@ -70,16 +72,18 @@ export function MapController({
             dispatch(selectLocation('pickup'));
 
             const {lat, lng} = geoPointToCoordinates(pickupGeo);
-            map.flyTo([lat, lng], 14, {duration: 0.8});
+            // Smooth fly to the pickup location
+            map.flyTo([lat, lng], 14, {duration: 1});
         } else {
             dispatch(selectLocation(null));
         }
     }, [selectedRideId, rides, dispatch, map]);
 
-    // Fly to current location
+    // Fly to current location only on initial load
     useEffect(() => {
-        if (location) {
-            map.flyTo([location.lat, location.lng], 14, {duration: 0.8});
+        if (location && map.getZoom() === 13) {
+            // Only if at default zoom
+            map.flyTo([location.lat, location.lng], 14, {duration: 1});
         }
     }, [location, map]);
 

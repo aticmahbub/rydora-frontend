@@ -20,12 +20,14 @@ import {
 } from '@/components/ui/form';
 import {useUserInfoQuery} from '@/redux/features/user/user.api';
 import {Spinner} from '@/components/ui/Spinner';
+import {useEffect} from 'react';
 import {useRequestRideMutation} from '@/redux/features/ride/ride.api';
 import type {IRide} from '@/types';
 import type {RootState} from '@/redux/store';
 import {useSelector} from 'react-redux';
 import {LocationDisplay} from '../map/LocationDisplay';
-import z from 'zod';
+import {formatDistance} from '@/utils/rideCalculator';
+import {z} from 'zod';
 
 // Simplified schema - only fare is needed
 const requestRideFormSchema = z.object({
@@ -34,7 +36,12 @@ const requestRideFormSchema = z.object({
 
 type TRequestRideForm = z.infer<typeof requestRideFormSchema>;
 
-export function RequestRideForm({...props}: React.ComponentProps<typeof Card>) {
+interface RequestRideFormProps extends React.ComponentProps<typeof Card> {
+    routeInfo?: {distance: number; fare: number};
+    onRouteUpdate?: (distance: number, fare: number) => void;
+}
+
+export function RequestRideForm({routeInfo, ...props}: RequestRideFormProps) {
     const {pickupLocation, dropoffLocation} = useSelector(
         (state: RootState) => state.location,
     );
@@ -48,6 +55,13 @@ export function RequestRideForm({...props}: React.ComponentProps<typeof Card>) {
         },
     });
 
+    // Auto-fill estimated fare when route info changes
+    useEffect(() => {
+        if (routeInfo?.fare && routeInfo.fare > 0) {
+            form.setValue('fare', routeInfo.fare);
+        }
+    }, [routeInfo, form]);
+
     const onSubmit = async (data: TRequestRideForm) => {
         if (!userData?.data?._id || !pickupLocation || !dropoffLocation) {
             console.error('Missing required data');
@@ -56,15 +70,15 @@ export function RequestRideForm({...props}: React.ComponentProps<typeof Card>) {
 
         const rideInfo: Partial<IRide> = {
             riderId: userData.data._id,
-            pickupLocation, // Directly from Redux
-            dropoffLocation, // Directly from Redux
+            pickupLocation,
+            dropoffLocation,
             fare: Number(data.fare),
+            distance: routeInfo?.distance,
         };
 
         try {
             const res = await requestRide(rideInfo);
             console.log('Ride requested:', res);
-            // Optional: Reset form or show success message
             form.reset();
         } catch (error) {
             console.error('Failed to request ride:', error);
@@ -118,13 +132,35 @@ export function RequestRideForm({...props}: React.ComponentProps<typeof Card>) {
                                 )}
                             </div>
 
-                            {/* Fare Input - Only input field needed */}
+                            {/* Route Information */}
+                            {routeInfo && routeInfo.distance > 0 && (
+                                <div className='p-3 bg-blue-50 border border-blue-200 rounded-md'>
+                                    <div className='flex justify-between items-center'>
+                                        <span className='text-sm font-medium text-blue-800'>
+                                            Distance:
+                                        </span>
+                                        <span className='text-sm text-blue-600'>
+                                            {formatDistance(routeInfo.distance)}
+                                        </span>
+                                    </div>
+                                    <div className='flex justify-between items-center mt-1'>
+                                        <span className='text-sm font-medium text-blue-800'>
+                                            Estimated Fare:
+                                        </span>
+                                        <span className='text-sm font-semibold text-green-600'>
+                                            ৳{routeInfo.fare}
+                                        </span>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Fare Input */}
                             <FormField
                                 control={form.control}
                                 name='fare'
                                 render={({field}) => (
                                     <FormItem>
-                                        <FormLabel>Fare ($)</FormLabel>
+                                        <FormLabel>Fare (৳)</FormLabel>
                                         <FormControl>
                                             <Input
                                                 {...field}
