@@ -3,7 +3,7 @@ import RideDetails from '@/pages/rider/RideDetails';
 import RideHistory from '@/pages/rider/RideHistory';
 import RiderProfile from '@/pages/rider/RiderProfile';
 import TrackRide from '@/pages/rider/TrackRide';
-import DriverRegistration from '@/pages/user/DriverRegistration';
+import DriverRegistration from '@/pages/user/driverRegistration/DriverRegistration';
 import type {ISidebarItems} from '@/types';
 
 export const riderSidebarItems: ISidebarItems[] = [

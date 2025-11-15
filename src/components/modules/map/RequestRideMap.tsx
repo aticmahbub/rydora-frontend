@@ -40,15 +40,13 @@ export default function RequestRideMap({
                 attribution='&copy; OpenStreetMap contributors'
             />
 
-            {/* Current user location */}
             <UserLocationMarker location={location} loading={loading} />
 
-            {/* Pickup location marker */}
             {pickupLocation && (
                 <Marker
                     position={[
-                        pickupLocation.coordinates[1], // lat
-                        pickupLocation.coordinates[0], // lng
+                        pickupLocation.coordinates[1],
+                        pickupLocation.coordinates[0],
                     ]}
                     icon={pickupIcon}
                 >
@@ -56,12 +54,11 @@ export default function RequestRideMap({
                 </Marker>
             )}
 
-            {/* Dropoff location marker */}
             {dropoffLocation && (
                 <Marker
                     position={[
-                        dropoffLocation.coordinates[1], // lat
-                        dropoffLocation.coordinates[0], // lng
+                        dropoffLocation.coordinates[1],
+                        dropoffLocation.coordinates[0],
                     ]}
                     icon={dropoffIcon}
                 >
@@ -69,7 +66,6 @@ export default function RequestRideMap({
                 </Marker>
             )}
 
-            {/* Map controller for click handling */}
             <MapController
                 rides={[]}
                 selectedRideId={null}

@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback} from 'react';
+import {useEffect, useState, useCallback} from 'react';
 import {useDispatch} from 'react-redux';
 import {useLocationContext} from '@/contexts/location.context';
 import {setLocationWithGeocoding} from '@/redux/features/location/location.slice';
@@ -31,7 +31,6 @@ export default function RequestRide() {
         [],
     );
 
-    // Stable callback to prevent infinite loops
     const handleRouteUpdate = useCallback((distance: number, fare: number) => {
         setRouteInfo({distance, fare});
     }, []);

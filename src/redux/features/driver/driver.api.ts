@@ -1,29 +1,5 @@
 import {baseApi} from '@/redux/baseApi';
 
-// interface InsuranceData {
-//     provider: string;
-//     policyNo: string;
-//     expiryDate: string;
-//     document: string;
-// }
-
-// interface VehicleData {
-//     registrationNo: string;
-//     vehicleType: string;
-//     brand: string;
-//     model: string;
-//     color: string;
-//     manufacturingYear: number;
-//     capacity: number;
-//     registrationCard: string;
-//     insurance: InsuranceData;
-// }
-
-// interface DriverRegistrationRequest {
-//     drivingLicenseNo: string;
-//     vehicle: VehicleData;
-// }
-
 export const driverApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         driverRegistration: builder.mutation({

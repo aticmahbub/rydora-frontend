@@ -27,12 +27,9 @@ export function MapController({
         async click(e) {
             const {lat, lng} = e.latlng;
 
-            // Don't fly to the clicked location immediately
-            // Let the parent component handle the center logic
             console.log('Map clicked:', {lat, lng});
 
             try {
-                // Use the new geocoding action
                 const result = await dispatch(
                     setLocationWithGeocoding({
                         coordinates: {lat, lng},
@@ -44,7 +41,7 @@ export function MapController({
                 onLocationClick?.(lat, lng, result.address);
             } catch (error) {
                 console.error('Failed to set location with geocoding:', error);
-                // Fallback: just set coordinates without address
+
                 onLocationClick?.(
                     lat,
                     lng,
@@ -61,7 +58,6 @@ export function MapController({
             const pickupGeo = selected.pickupLocation;
             const dropoffGeo = selected.dropoffLocation;
 
-            // Use the new geocoding action for selected rides too
             dispatch(
                 setLocationWithGeocoding({
                     coordinates: geoPointToCoordinates(dropoffGeo),
@@ -72,17 +68,16 @@ export function MapController({
             dispatch(selectLocation('pickup'));
 
             const {lat, lng} = geoPointToCoordinates(pickupGeo);
-            // Smooth fly to the pickup location
+            //  fly to the pickup location
             map.flyTo([lat, lng], 14, {duration: 1});
         } else {
             dispatch(selectLocation(null));
         }
     }, [selectedRideId, rides, dispatch, map]);
 
-    // Fly to current location only on initial load
+    // Fly to current location on initial load
     useEffect(() => {
         if (location && map.getZoom() === 13) {
-            // Only if at default zoom
             map.flyTo([location.lat, location.lng], 14, {duration: 1});
         }
     }, [location, map]);

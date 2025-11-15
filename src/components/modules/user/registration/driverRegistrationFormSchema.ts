@@ -1,3 +1,4 @@
+import {vehicleTypes} from '@/constants/vehicleTypes';
 import z from 'zod';
 
 export const vehicleRegistrationFormSchema = z.object({
@@ -5,11 +6,11 @@ export const vehicleRegistrationFormSchema = z.object({
     drivingLicenseNo: z
         .string()
         .min(5, 'Driving license number must be at least 5 characters')
-        .max(20, 'Driving license number must be less than 20 characters'),
-    // .regex(
-    //     /^[A-Za-z0-9-]+$/,
-    //     'Only letters, numbers, and hyphens are allowed',
-    // ),
+        .max(20, 'Driving license number must be less than 20 characters')
+        .regex(
+            /^[A-Za-z0-9-]+$/,
+            'Only letters, numbers, and hyphens are allowed',
+        ),
 
     // Vehicle Information
     registrationNo: z
@@ -21,8 +22,8 @@ export const vehicleRegistrationFormSchema = z.object({
             'Only letters, numbers, and hyphens are allowed',
         ),
 
-    vehicleType: z.enum(['CAR', 'BIKE', 'CNG', 'MICROBUS'], {
-        errorMap: () => ({message: 'Please select a valid vehicle type'}),
+    vehicleType: z.enum([...Object.values(vehicleTypes)], {
+        error: 'Invalid vehicle type',
     }),
 
     brand: z
@@ -39,14 +40,6 @@ export const vehicleRegistrationFormSchema = z.object({
         .string()
         .min(2, 'Color must be at least 2 characters')
         .max(20, 'Color must be less than 20 characters'),
-
-    manufacturingYear: z
-        .number()
-        .min(1990, 'Manufacturing year must be 1990 or later')
-        .max(
-            new Date().getFullYear() + 1,
-            'Manufacturing year cannot be in the future',
-        ),
 
     capacity: z
         .number()
@@ -72,15 +65,11 @@ export const vehicleRegistrationFormSchema = z.object({
             'Insurance must be valid (not expired)',
         ),
 
-    // Document URLs (in real app, these would be file uploads)
-    registrationCard: z
-        .string()
-        .url('Invalid registration card URL')
-        .optional(),
-    insuranceDocument: z
-        .string()
-        .url('Invalid insurance document URL')
-        .optional(),
+    // Document URLs
+    // registrationCard: z
+    //     .string()
+    //     .url('Invalid registration card URL')
+    //     .optional(),
 });
 
 export type TVehicleRegistrationForm = z.infer<

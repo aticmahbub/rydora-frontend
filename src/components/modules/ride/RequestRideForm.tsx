@@ -22,7 +22,6 @@ import {useUserInfoQuery} from '@/redux/features/user/user.api';
 import {Spinner} from '@/components/ui/Spinner';
 import {useEffect} from 'react';
 import {useRequestRideMutation} from '@/redux/features/ride/ride.api';
-import type {IRide} from '@/types';
 import type {RootState} from '@/redux/store';
 import {useSelector} from 'react-redux';
 import {LocationDisplay} from '../map/LocationDisplay';
@@ -31,6 +30,15 @@ import {
     requestRideFormSchema,
     type TRequestRideForm,
 } from './requestRideFormSchema';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import {PaymentMethod} from '@/constants/role';
+import {toast} from 'sonner';
 
 interface RequestRideFormProps extends React.ComponentProps<typeof Card> {
     routeInfo?: {distance: number; fare: number};
@@ -47,43 +55,55 @@ export function RequestRideForm({routeInfo, ...props}: RequestRideFormProps) {
     const form = useForm<TRequestRideForm>({
         resolver: zodResolver(requestRideFormSchema),
         defaultValues: {
+            paymentMethod: PaymentMethod.CASH,
             fare: 0,
         },
     });
 
-    // Auto-fill estimated fare when route info changes
+    // set estimated fare when route info changes
     useEffect(() => {
         if (routeInfo?.fare && routeInfo.fare > 0) {
-            form.setValue('fare', routeInfo.fare);
+            const currentFare = form.getValues('fare');
+
+            if (currentFare === 0 || currentFare === routeInfo.fare) {
+                form.setValue('fare', routeInfo.fare);
+            }
         }
     }, [routeInfo, form]);
 
     const onSubmit = async (data: TRequestRideForm) => {
+        const toastId = toast.loading('Requesting for the ride...');
         if (!userData?.data?._id || !pickupLocation || !dropoffLocation) {
             console.error('Missing required data');
+            toast.error('Data missing');
             return;
         }
 
-        const rideInfo: Partial<IRide> = {
-            riderId: userData.data._id,
+        const rideInfo = {
             pickupLocation,
             dropoffLocation,
-            fare: Number(data.fare),
-            distance: routeInfo?.distance,
+            paymentMethod: data.paymentMethod,
+            riderNote: data.riderNote,
+            fare: data.fare,
         };
-        console.log('Submitting ride info:', rideInfo);
+
+        console.log('rideInfo:', rideInfo);
 
         try {
             const res = await requestRide(rideInfo);
-            console.log('Ride requested:', res);
-            form.reset();
-            alert('Ride requested successfully!');
+            console.log('res:', res);
+            if (res.data?.success) {
+                toast.success('Ride request submitted successfully', {
+                    id: toastId,
+                });
+                form.reset();
+            }
         } catch (error) {
-            console.error('Failed to request ride:', error);
+            toast.error('Failed to submit ride request', {id: toastId});
+            console.error('error:', error);
         }
     };
 
-    // Check if form can be submitted
     const canSubmit = pickupLocation && dropoffLocation;
 
     if (isLoading) {
@@ -95,7 +115,7 @@ export function RequestRideForm({routeInfo, ...props}: RequestRideFormProps) {
             <CardHeader>
                 <CardTitle>Request a Ride</CardTitle>
                 <CardDescription>
-                    Set locations on the map and enter fare
+                    Set locations and confirm the fare amount
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -152,25 +172,118 @@ export function RequestRideForm({routeInfo, ...props}: RequestRideFormProps) {
                                 </div>
                             )}
 
-                            {/* Fare Input */}
+                            {/* Fare Input - Editable with estimated fare as default */}
                             <FormField
                                 control={form.control}
                                 name='fare'
                                 render={({field}) => (
                                     <FormItem>
-                                        <FormLabel>Fare (৳)</FormLabel>
+                                        <FormLabel>Fare Amount (৳)</FormLabel>
                                         <FormControl>
-                                            <Input
+                                            <div className='relative'>
+                                                <Input
+                                                    {...field}
+                                                    onChange={(e) => {
+                                                        const value =
+                                                            e.target.value;
+                                                        field.onChange(
+                                                            value === ''
+                                                                ? 0
+                                                                : Number(value),
+                                                        );
+                                                    }}
+                                                    value={field.value || ''}
+                                                    type='number'
+                                                    placeholder='Enter fare amount'
+                                                    min='1'
+                                                    className='pr-20'
+                                                />
+                                                {routeInfo?.fare && (
+                                                    <div className='absolute right-2 top-1/2 transform -translate-y-1/2 flex gap-1'>
+                                                        <button
+                                                            type='button'
+                                                            onClick={() =>
+                                                                form.setValue(
+                                                                    'fare',
+                                                                    routeInfo.fare,
+                                                                )
+                                                            }
+                                                            className='text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded hover:bg-blue-200 transition-colors'
+                                                        >
+                                                            Use Estimate
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </FormControl>
+                                        <div className='flex justify-between items-center'>
+                                            <FormMessage />
+                                            {routeInfo?.fare && (
+                                                <p className='text-xs text-gray-500'>
+                                                    Estimated: ৳{routeInfo.fare}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </FormItem>
+                                )}
+                            />
+
+                            {/* Payment Method Selection */}
+                            <FormField
+                                control={form.control}
+                                name='paymentMethod'
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>Payment Method</FormLabel>
+                                        <Select
+                                            onValueChange={field.onChange}
+                                            defaultValue={field.value}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder='Select payment method' />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem
+                                                    value={PaymentMethod.CASH}
+                                                >
+                                                    Cash
+                                                </SelectItem>
+                                                <SelectItem
+                                                    value={PaymentMethod.CARD}
+                                                >
+                                                    Credit/Debit Card
+                                                </SelectItem>
+                                                <SelectItem
+                                                    value={
+                                                        PaymentMethod.MOBILE_WALLET
+                                                    }
+                                                >
+                                                    Mobile Wallet
+                                                </SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            {/* Optional Rider Note */}
+                            <FormField
+                                control={form.control}
+                                name='riderNote'
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>
+                                            Special Instructions (Optional)
+                                        </FormLabel>
+                                        <FormControl>
+                                            <textarea
                                                 {...field}
-                                                onChange={(e) =>
-                                                    field.onChange(
-                                                        Number(e.target.value),
-                                                    )
-                                                }
-                                                value={field.value || ''}
-                                                type='number'
-                                                placeholder='Enter fare amount'
-                                                min='1'
+                                                className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                                                placeholder='Any special instructions for the driver...'
+                                                rows={3}
                                             />
                                         </FormControl>
                                         <FormMessage />
@@ -189,6 +302,12 @@ export function RequestRideForm({routeInfo, ...props}: RequestRideFormProps) {
                                             ? 'Request Ride'
                                             : 'Set Locations First'}
                                     </Button>
+                                    {canSubmit && (
+                                        <p className='text-xs text-center text-gray-500 mt-2'>
+                                            You can adjust the fare amount if
+                                            needed
+                                        </p>
+                                    )}
                                 </Field>
                             </FieldGroup>
                         </FieldGroup>

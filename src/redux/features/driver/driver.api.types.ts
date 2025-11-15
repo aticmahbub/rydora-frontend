@@ -1,19 +1,14 @@
+import type {TVehicleRegistrationForm} from '@/components/modules/user/registration/driverRegistrationFormSchema';
+
 export interface IDriverRegistrationRequest {
     drivingLicenseNo: string;
     vehicle: {
         registrationNo: string;
-        vehicleType: string;
+        vehicleType: TVehicleRegistrationForm;
         brand: string;
         model: string;
         color: string;
-        manufacturingYear: number;
         capacity: number;
-        registrationCard: string;
-        insurance: {
-            provider: string;
-            policyNo: string;
-            expiryDate: string;
-            document: string;
-        };
+        // registrationCard: string;
     };
 }

@@ -16,7 +16,7 @@ export interface IRide {
 
     riderId: string;
     driverId?: string;
-    // vehicleId?: Types.ObjectId;
+    vehicleId?: string;
 
     pickupLocation: IGeoPoint;
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {Button} from '@/components/ui/button';
 import {
     Card,
@@ -47,7 +48,6 @@ export function DriverRegistrationForm({
 }: DriverRegistrationFormProps) {
     const [driverRegistration, {isLoading}] = useDriverRegistrationMutation();
     const [isSubmitted, setIsSubmitted] = useState(false);
-    const [currentStep, setCurrentStep] = useState(1);
 
     const form = useForm<TVehicleRegistrationForm>({
         resolver: zodResolver(vehicleRegistrationFormSchema),
@@ -58,13 +58,10 @@ export function DriverRegistrationForm({
             brand: '',
             model: '',
             color: '',
-            manufacturingYear: new Date().getFullYear(),
             capacity: 4,
             insuranceProvider: '',
             insurancePolicyNo: '',
             insuranceExpiryDate: '',
-            registrationCard: '',
-            insuranceDocument: '',
         },
     });
 
@@ -79,19 +76,11 @@ export function DriverRegistrationForm({
                     brand: data.brand,
                     model: data.model,
                     color: data.color,
-                    manufacturingYear: data.manufacturingYear,
                     capacity: data.capacity,
-                    registrationCard: data.registrationCard || '',
-                    insurance: {
-                        provider: data.insuranceProvider,
-                        policyNo: data.insurancePolicyNo,
-                        expiryDate: data.insuranceExpiryDate,
-                        document: data.insuranceDocument || '',
-                    },
                 },
             };
 
-            console.log('Submitting driver registration:', registrationData); // Debug log
+            console.log('Submitting driver registration:', registrationData);
 
             const result = await driverRegistration(registrationData).unwrap();
             console.log('Driver registration successful:', result);
@@ -127,41 +116,10 @@ export function DriverRegistrationForm({
         }
     };
 
-    const nextStep = () => {
-        // Validate current step before proceeding
-        const fields =
-            currentStep === 1
-                ? [
-                      'drivingLicenseNo',
-                      'registrationNo',
-                      'vehicleType',
-                      'brand',
-                      'model',
-                      'color',
-                  ]
-                : [
-                      'manufacturingYear',
-                      'capacity',
-                      'insuranceProvider',
-                      'insurancePolicyNo',
-                      'insuranceExpiryDate',
-                  ];
-
-        form.trigger(fields as any).then((isValid) => {
-            if (isValid) {
-                setCurrentStep(currentStep + 1);
-            }
-        });
-    };
-
-    const prevStep = () => {
-        setCurrentStep(currentStep - 1);
-    };
-
     // Success state
     if (isSubmitted) {
         return (
-            <Card className='w-full max-w-2xl mx-auto' {...props}>
+            <Card className='w-full max-w-4xl mx-auto' {...props}>
                 <CardHeader className='text-center'>
                     <div className='w-16 h-16 mx-auto bg-green-100 rounded-full flex items-center justify-center mb-4'>
                         <span className='text-2xl'>✅</span>
@@ -181,7 +139,6 @@ export function DriverRegistrationForm({
                     <Button
                         onClick={() => {
                             setIsSubmitted(false);
-                            setCurrentStep(1);
                         }}
                         variant='outline'
                         className='w-full'
@@ -194,31 +151,14 @@ export function DriverRegistrationForm({
     }
 
     return (
-        <Card className='w-full max-w-2xl mx-auto' {...props}>
+        <Card className='w-full max-w-4xl mx-auto' {...props}>
             <CardHeader>
                 <div className='flex items-center justify-between'>
                     <div>
                         <CardTitle>Become a Driver</CardTitle>
                         <CardDescription>
-                            Step {currentStep} of 2 -{' '}
-                            {currentStep === 1
-                                ? 'Driver & Vehicle Info'
-                                : 'Insurance & Details'}
+                            Complete your driver and vehicle registration
                         </CardDescription>
-                    </div>
-                    <div className='flex gap-1'>
-                        {[1, 2].map((step) => (
-                            <div
-                                key={step}
-                                className={`w-3 h-3 rounded-full ${
-                                    step === currentStep
-                                        ? 'bg-blue-600'
-                                        : step < currentStep
-                                        ? 'bg-green-500'
-                                        : 'bg-gray-300'
-                                }`}
-                            />
-                        ))}
                     </div>
                 </div>
             </CardHeader>
@@ -229,11 +169,12 @@ export function DriverRegistrationForm({
                         className='space-y-6'
                     >
                         <FieldGroup>
-                            {currentStep === 1 && (
-                                <>
+                            <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
+                                {/* Left Column - Driver & Vehicle Info */}
+                                <div className='space-y-6'>
                                     {/* Driver Information */}
-                                    <div className='border-b pb-4 mb-4'>
-                                        <h3 className='text-lg font-semibold text-gray-900 mb-3'>
+                                    <div className='space-y-4'>
+                                        <h3 className='text-lg font-semibold text-gray-900 border-b pb-2'>
                                             Driver Information
                                         </h3>
                                         <FormField
@@ -265,75 +206,71 @@ export function DriverRegistrationForm({
 
                                     {/* Vehicle Basic Information */}
                                     <div className='space-y-4'>
-                                        <h3 className='text-lg font-semibold text-gray-900'>
+                                        <h3 className='text-lg font-semibold text-gray-900 border-b pb-2'>
                                             Vehicle Information
                                         </h3>
 
-                                        <div className='grid grid-cols-2 gap-4'>
-                                            <FormField
-                                                control={form.control}
-                                                name='registrationNo'
-                                                render={({field}) => (
-                                                    <FormItem>
-                                                        <FormLabel>
-                                                            Registration No *
-                                                        </FormLabel>
-                                                        <FormControl>
-                                                            <Input
-                                                                {...field}
-                                                                placeholder='DHAKA-METRO-1234'
-                                                                className='uppercase'
-                                                                disabled={
-                                                                    isLoading
-                                                                }
-                                                            />
-                                                        </FormControl>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
+                                        <FormField
+                                            control={form.control}
+                                            name='registrationNo'
+                                            render={({field}) => (
+                                                <FormItem>
+                                                    <FormLabel>
+                                                        Registration No *
+                                                    </FormLabel>
+                                                    <FormControl>
+                                                        <Input
+                                                            {...field}
+                                                            placeholder='DHAKA-METRO-1234'
+                                                            className='uppercase'
+                                                            disabled={isLoading}
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
 
-                                            <FormField
-                                                control={form.control}
-                                                name='vehicleType'
-                                                render={({field}) => (
-                                                    <FormItem>
-                                                        <FormLabel>
-                                                            Vehicle Type *
-                                                        </FormLabel>
-                                                        <Select
-                                                            onValueChange={
-                                                                field.onChange
-                                                            }
-                                                            defaultValue={
-                                                                field.value
-                                                            }
-                                                        >
-                                                            <FormControl>
-                                                                <SelectTrigger>
-                                                                    <SelectValue placeholder='Select vehicle type' />
-                                                                </SelectTrigger>
-                                                            </FormControl>
-                                                            <SelectContent>
-                                                                <SelectItem value='CAR'>
-                                                                    Car
-                                                                </SelectItem>
-                                                                <SelectItem value='BIKE'>
-                                                                    Bike
-                                                                </SelectItem>
-                                                                <SelectItem value='CNG'>
-                                                                    CNG
-                                                                </SelectItem>
-                                                                <SelectItem value='MICROBUS'>
-                                                                    Microbus
-                                                                </SelectItem>
-                                                            </SelectContent>
-                                                        </Select>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
-                                        </div>
+                                        <FormField
+                                            control={form.control}
+                                            name='vehicleType'
+                                            render={({field}) => (
+                                                <FormItem>
+                                                    <FormLabel>
+                                                        Vehicle Type *
+                                                    </FormLabel>
+                                                    <Select
+                                                        onValueChange={
+                                                            field.onChange
+                                                        }
+                                                        defaultValue={
+                                                            field.value
+                                                        }
+                                                    >
+                                                        <FormControl>
+                                                            <SelectTrigger>
+                                                                <SelectValue placeholder='Select vehicle type' />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            <SelectItem value='CAR'>
+                                                                Car
+                                                            </SelectItem>
+                                                            <SelectItem value='BIKE'>
+                                                                Bike
+                                                            </SelectItem>
+                                                            <SelectItem value='CNG'>
+                                                                CNG
+                                                            </SelectItem>
+                                                            <SelectItem value='MICROBUS'>
+                                                                Microbus
+                                                            </SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
 
                                         <div className='grid grid-cols-2 gap-4'>
                                             <FormField
@@ -347,7 +284,7 @@ export function DriverRegistrationForm({
                                                         <FormControl>
                                                             <Input
                                                                 {...field}
-                                                                placeholder='Toyota, Honda, etc.'
+                                                                placeholder='Toyota'
                                                                 disabled={
                                                                     isLoading
                                                                 }
@@ -369,7 +306,7 @@ export function DriverRegistrationForm({
                                                         <FormControl>
                                                             <Input
                                                                 {...field}
-                                                                placeholder='Corolla, Civic, etc.'
+                                                                placeholder='Corolla'
                                                                 disabled={
                                                                     isLoading
                                                                 }
@@ -392,7 +329,7 @@ export function DriverRegistrationForm({
                                                     <FormControl>
                                                         <Input
                                                             {...field}
-                                                            placeholder='White, Black, Red, etc.'
+                                                            placeholder='White'
                                                             disabled={isLoading}
                                                         />
                                                     </FormControl>
@@ -401,111 +338,40 @@ export function DriverRegistrationForm({
                                             )}
                                         />
                                     </div>
-                                </>
-                            )}
+                                </div>
 
-                            {currentStep === 2 && (
-                                <>
+                                {/* Right Column - Specifications & Insurance */}
+                                <div className='space-y-6'>
                                     {/* Vehicle Specifications */}
-                                    <div className='grid grid-cols-2 gap-4'>
-                                        <FormField
-                                            control={form.control}
-                                            name='manufacturingYear'
-                                            render={({field}) => (
-                                                <FormItem>
-                                                    <FormLabel>
-                                                        Manufacturing Year *
-                                                    </FormLabel>
-                                                    <FormControl>
-                                                        <Input
-                                                            {...field}
-                                                            type='number'
-                                                            onChange={(e) =>
-                                                                field.onChange(
-                                                                    parseInt(
-                                                                        e.target
-                                                                            .value,
-                                                                    ),
-                                                                )
-                                                            }
-                                                            disabled={isLoading}
-                                                        />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-
-                                        <FormField
-                                            control={form.control}
-                                            name='capacity'
-                                            render={({field}) => (
-                                                <FormItem>
-                                                    <FormLabel>
-                                                        Passenger Capacity *
-                                                    </FormLabel>
-                                                    <FormControl>
-                                                        <Input
-                                                            {...field}
-                                                            type='number'
-                                                            onChange={(e) =>
-                                                                field.onChange(
-                                                                    parseInt(
-                                                                        e.target
-                                                                            .value,
-                                                                    ),
-                                                                )
-                                                            }
-                                                            disabled={isLoading}
-                                                        />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                    </div>
-
-                                    {/* Insurance Information */}
-                                    <div className='border-t pt-4'>
-                                        <h3 className='text-lg font-semibold text-gray-900 mb-3'>
-                                            Insurance Information
+                                    <div className='space-y-4'>
+                                        <h3 className='text-lg font-semibold text-gray-900 border-b pb-2'>
+                                            Vehicle Specifications
                                         </h3>
 
                                         <div className='grid grid-cols-2 gap-4'>
                                             <FormField
                                                 control={form.control}
-                                                name='insuranceProvider'
+                                                name='capacity'
                                                 render={({field}) => (
                                                     <FormItem>
                                                         <FormLabel>
-                                                            Insurance Provider *
+                                                            Capacity *
                                                         </FormLabel>
                                                         <FormControl>
                                                             <Input
                                                                 {...field}
-                                                                placeholder='Company Name'
-                                                                disabled={
-                                                                    isLoading
+                                                                type='number'
+                                                                min={1}
+                                                                max={20}
+                                                                onChange={(e) =>
+                                                                    field.onChange(
+                                                                        parseInt(
+                                                                            e
+                                                                                .target
+                                                                                .value,
+                                                                        ),
+                                                                    )
                                                                 }
-                                                            />
-                                                        </FormControl>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
-
-                                            <FormField
-                                                control={form.control}
-                                                name='insurancePolicyNo'
-                                                render={({field}) => (
-                                                    <FormItem>
-                                                        <FormLabel>
-                                                            Policy Number *
-                                                        </FormLabel>
-                                                        <FormControl>
-                                                            <Input
-                                                                {...field}
-                                                                placeholder='POL-123456'
                                                                 disabled={
                                                                     isLoading
                                                                 }
@@ -516,6 +382,53 @@ export function DriverRegistrationForm({
                                                 )}
                                             />
                                         </div>
+                                    </div>
+
+                                    {/* Insurance Information */}
+                                    <div className='space-y-4'>
+                                        <h3 className='text-lg font-semibold text-gray-900 border-b pb-2'>
+                                            Insurance Information
+                                        </h3>
+
+                                        <FormField
+                                            control={form.control}
+                                            name='insuranceProvider'
+                                            render={({field}) => (
+                                                <FormItem>
+                                                    <FormLabel>
+                                                        Insurance Provider *
+                                                    </FormLabel>
+                                                    <FormControl>
+                                                        <Input
+                                                            {...field}
+                                                            placeholder='Company Name'
+                                                            disabled={isLoading}
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+
+                                        <FormField
+                                            control={form.control}
+                                            name='insurancePolicyNo'
+                                            render={({field}) => (
+                                                <FormItem>
+                                                    <FormLabel>
+                                                        Policy Number *
+                                                    </FormLabel>
+                                                    <FormControl>
+                                                        <Input
+                                                            {...field}
+                                                            placeholder='POL-123456'
+                                                            disabled={isLoading}
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
 
                                         <FormField
                                             control={form.control}
@@ -523,7 +436,7 @@ export function DriverRegistrationForm({
                                             render={({field}) => (
                                                 <FormItem>
                                                     <FormLabel>
-                                                        Insurance Expiry Date *
+                                                        Expiry Date *
                                                     </FormLabel>
                                                     <FormControl>
                                                         <Input
@@ -536,112 +449,87 @@ export function DriverRegistrationForm({
                                                 </FormItem>
                                             )}
                                         />
-
-                                        {/* Document Uploads (Placeholder) */}
-                                        <div className='grid grid-cols-2 gap-4'>
-                                            <FormField
-                                                control={form.control}
-                                                name='registrationCard'
-                                                render={({field}) => (
-                                                    <FormItem>
-                                                        <FormLabel>
-                                                            Registration Card
-                                                            URL
-                                                        </FormLabel>
-                                                        <FormControl>
-                                                            <Input
-                                                                {...field}
-                                                                type='url'
-                                                                placeholder='https://example.com/registration.pdf'
-                                                                disabled={
-                                                                    isLoading
-                                                                }
-                                                            />
-                                                        </FormControl>
-                                                        <FormDescription>
-                                                            Upload your vehicle
-                                                            registration card
-                                                        </FormDescription>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
-
-                                            <FormField
-                                                control={form.control}
-                                                name='insuranceDocument'
-                                                render={({field}) => (
-                                                    <FormItem>
-                                                        <FormLabel>
-                                                            Insurance Document
-                                                            URL
-                                                        </FormLabel>
-                                                        <FormControl>
-                                                            <Input
-                                                                {...field}
-                                                                type='url'
-                                                                placeholder='https://example.com/insurance.pdf'
-                                                                disabled={
-                                                                    isLoading
-                                                                }
-                                                            />
-                                                        </FormControl>
-                                                        <FormDescription>
-                                                            Upload your
-                                                            insurance document
-                                                        </FormDescription>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
-                                        </div>
                                     </div>
-                                </>
-                            )}
 
-                            {/* Navigation Buttons */}
-                            <div className='flex gap-3 pt-4'>
-                                {currentStep > 1 && (
-                                    <Button
-                                        type='button'
-                                        variant='outline'
-                                        onClick={prevStep}
-                                        disabled={isLoading}
-                                        className='flex-1'
-                                    >
-                                        Previous
-                                    </Button>
-                                )}
+                                    {/* Document Uploads */}
+                                    {/* <div className='space-y-4'>
+                                        <h3 className='text-lg font-semibold text-gray-900 border-b pb-2'>
+                                            Documents (Optional)
+                                        </h3>
 
-                                {currentStep < 2 ? (
-                                    <Button
-                                        type='button'
-                                        onClick={nextStep}
-                                        disabled={isLoading}
-                                        className='flex-1'
-                                    >
-                                        Next
-                                    </Button>
-                                ) : (
-                                    <Button
-                                        type='submit'
-                                        disabled={isLoading}
-                                        className='flex-1 py-3'
-                                        size='lg'
-                                    >
-                                        {isLoading ? (
-                                            <span className='flex items-center gap-2'>
-                                                <Spinner size='sm' />
-                                                Submitting Application...
-                                            </span>
-                                        ) : (
-                                            <span className='flex items-center gap-2'>
-                                                <span>🚗</span>
-                                                Submit Application
-                                            </span>
-                                        )}
-                                    </Button>
-                                )}
+                                        <FormField
+                                            control={form.control}
+                                            name='registrationCard'
+                                            render={({field}) => (
+                                                <FormItem>
+                                                    <FormLabel>
+                                                        Registration Card URL
+                                                    </FormLabel>
+                                                    <FormControl>
+                                                        <Input
+                                                            {...field}
+                                                            type='url'
+                                                            placeholder='https://example.com/registration.pdf'
+                                                            disabled={isLoading}
+                                                        />
+                                                    </FormControl>
+                                                    <FormDescription>
+                                                        Link to vehicle
+                                                        registration
+                                                    </FormDescription>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+
+                                        <FormField
+                                            control={form.control}
+                                            name='insuranceDocument'
+                                            render={({field}) => (
+                                                <FormItem>
+                                                    <FormLabel>
+                                                        Insurance Document URL
+                                                    </FormLabel>
+                                                    <FormControl>
+                                                        <Input
+                                                            {...field}
+                                                            type='url'
+                                                            placeholder='https://example.com/insurance.pdf'
+                                                            disabled={isLoading}
+                                                        />
+                                                    </FormControl>
+                                                    <FormDescription>
+                                                        Link to insurance
+                                                        document
+                                                    </FormDescription>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div> */}
+                                </div>
+                            </div>
+
+                            {/* Submit Button */}
+                            <div className='flex gap-3 pt-6 border-t'>
+                                <Button
+                                    type='submit'
+                                    disabled={isLoading}
+                                    className='flex-1 py-3'
+                                    size='lg'
+                                >
+                                    {isLoading ? (
+                                        <span className='flex items-center gap-2'>
+                                            <Spinner size='sm' />
+                                            Submitting Application...
+                                        </span>
+                                    ) : (
+                                        <span className='flex items-center gap-2'>
+                                            <span>🚗</span>
+                                            Submit Driver Application
+                                        </span>
+                                    )}
+                                </Button>
                             </div>
 
                             {/* Root Error Message */}

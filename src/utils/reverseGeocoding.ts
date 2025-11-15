@@ -8,7 +8,7 @@ export async function getAddressFromCoordinates(
     const {lat, lng} = coordinates;
     const cacheKey = `${lat.toFixed(6)},${lng.toFixed(6)}`;
 
-    // Check cache first
+    // Check cache
     if (geocodingCache.has(cacheKey)) {
         return geocodingCache.get(cacheKey)!;
     }
@@ -37,7 +37,7 @@ export async function getAddressFromCoordinates(
         return address;
     } catch (error) {
         console.error('Reverse geocoding error:', error);
-        // Fallback to coordinates
+
         return `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
     }
 }

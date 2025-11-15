@@ -18,7 +18,6 @@ export function RideList({
 }: RideListProps) {
     const handleAcceptRide = (rideId: string) => {
         console.log('Accepting ride:', rideId);
-        // Add your accept ride logic here
         if (onAcceptRide) {
             onAcceptRide(rideId);
         }

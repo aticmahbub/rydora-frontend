@@ -2,15 +2,32 @@ import MapView from '@/components/modules/map/MapView';
 import {RideList} from '@/components/modules/ride/RideList';
 import {Card, CardContent} from '@/components/ui/card';
 import {Spinner} from '@/components/ui/Spinner';
+import {useLocationContext} from '@/contexts/location.context';
 import {useFindRideQuery} from '@/redux/features/ride/ride.api';
+import {useUserInfoQuery} from '@/redux/features/user/user.api';
 import type {IRide} from '@/types';
-import {geoPointToCoordinates} from '@/utils/locationConverter';
+import {geoPointToCoordinates} from '@/utils/locationConverter'; // Import your utility
 import {useState} from 'react';
 
 export default function FindRide() {
     const {data: ridesResponse, isLoading, error} = useFindRideQuery(undefined);
+    const locationContext = useLocationContext();
+    const {data: userData, isLoading: isUserDataLoading} =
+        useUserInfoQuery(undefined);
     const [selectedRideId, setSelectedRideId] = useState<string | null>(null);
     const rides = ridesResponse?.data ?? [];
+
+    if (isUserDataLoading) {
+        return <Spinner />;
+    }
+
+    const userStoredLocation = userData?.data?.currentLocation
+        ? geoPointToCoordinates(userData.data.currentLocation)
+        : null;
+
+    const currentUserLocation = locationContext?.location || userStoredLocation;
+
+    console.log('Current location:', currentUserLocation);
 
     if (isLoading) {
         return (
@@ -51,6 +68,11 @@ export default function FindRide() {
                                 There are no active ride requests in your area
                                 at the moment.
                             </p>
+                            {currentUserLocation && (
+                                <p className='text-sm text-green-600'>
+                                    ✓ Your location is available on the map
+                                </p>
+                            )}
                         </div>
                     </CardContent>
                 </Card>
@@ -58,19 +80,19 @@ export default function FindRide() {
         );
     }
 
-    // Calculate center based on all rides for better overview
     const calculateOptimalCenter = (rides: IRide[]) => {
+        if (currentUserLocation) {
+            return currentUserLocation;
+        }
+
         if (rides.length === 0) return {lat: 23.8103, lng: 90.4125};
 
         const validRides = rides.filter(
-            (r) =>
-                r?.pickupLocation?.coordinates?.[0] !== undefined &&
-                r?.pickupLocation?.coordinates?.[1] !== undefined,
+            (r) => r?.pickupLocation?.coordinates?.[0] !== undefined,
         );
 
         if (validRides.length === 0) return {lat: 23.8103, lng: 90.4125};
 
-        // Calculate average center of all rides
         const total = validRides.reduce(
             (acc, ride) => {
                 const coords = geoPointToCoordinates(ride.pickupLocation);
@@ -96,13 +118,23 @@ export default function FindRide() {
             <div className='w-full lg:w-96'>
                 <div className='bg-white rounded-lg shadow-sm border'>
                     <div className='p-4 border-b'>
-                        <h2 className='text-lg font-semibold text-gray-900'>
-                            Available Rides
-                        </h2>
-                        <p className='text-sm text-gray-600'>
-                            {rides.length} ride{rides.length !== 1 ? 's' : ''}{' '}
-                            found
-                        </p>
+                        <div className='flex justify-between items-start'>
+                            <div>
+                                <h2 className='text-lg font-semibold text-gray-900'>
+                                    Available Rides
+                                </h2>
+                                <p className='text-sm text-gray-600'>
+                                    {rides.length} ride
+                                    {rides.length !== 1 ? 's' : ''} found
+                                </p>
+                            </div>
+                            {currentUserLocation && (
+                                <div className='flex items-center text-xs text-green-600 bg-green-50 px-2 py-1 rounded'>
+                                    <div className='w-2 h-2 bg-green-500 rounded-full mr-1'></div>
+                                    Your location
+                                </div>
+                            )}
+                        </div>
                     </div>
                     <RideList
                         rides={rides}
@@ -117,12 +149,28 @@ export default function FindRide() {
             <div className='flex-1 min-h-[400px] lg:min-h-[600px]'>
                 <div className='bg-white rounded-lg shadow-sm border h-full'>
                     <div className='p-4 border-b'>
-                        <h2 className='text-lg font-semibold text-gray-900'>
-                            Ride Map
-                        </h2>
-                        <p className='text-sm text-gray-600'>
-                            Click on markers to view ride details
-                        </p>
+                        <div className='flex justify-between items-center'>
+                            <div>
+                                <h2 className='text-lg font-semibold text-gray-900'>
+                                    Ride Map
+                                </h2>
+                                <p className='text-sm text-gray-600'>
+                                    Click on markers to view ride details
+                                </p>
+                            </div>
+                            <div className='flex items-center gap-2 text-sm'>
+                                {currentUserLocation && (
+                                    <div className='flex items-center text-green-600'>
+                                        <div className='w-3 h-3 bg-green-500 rounded-full mr-1'></div>
+                                        You are here
+                                    </div>
+                                )}
+                                <div className='flex items-center text-blue-600'>
+                                    <div className='w-3 h-3 bg-blue-500 rounded-full mr-1'></div>
+                                    Ride requests
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div className='h-[calc(100%-80px)]'>
                         <MapView
@@ -130,7 +178,8 @@ export default function FindRide() {
                             selectedRideId={selectedRideId}
                             onSelectRide={setSelectedRideId}
                             center={center}
-                            zoom={12}
+                            zoom={currentUserLocation ? 14 : 12}
+                            userLocation={currentUserLocation} // Pass to MapView
                         />
                     </div>
                 </div>

@@ -6,7 +6,7 @@ export interface IRide {
 
     riderId: string;
     driverId?: string;
-    // vehicleId?: Types.ObjectId;
+    vehicleId?: string;
 
     currentLocation: IGeoPoint;
 
@@ -25,6 +25,8 @@ export interface IRide {
     ratingByRider?: number;
     ratingByDriver?: number;
 
+    paymentMethod: string;
+    riderNote: string;
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -52,4 +54,23 @@ export interface IDropoffLocation {
     type: string;
     coordinates: number[];
     address: string;
+}
+
+export interface RideHistoryFilters {
+    startDate?: string;
+    endDate?: string;
+    minFare?: number;
+    maxFare?: number;
+    status?: string;
+    search?: string;
+}
+
+export interface RideHistoryResponse {
+    rides: IRide[];
+    pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+    };
 }

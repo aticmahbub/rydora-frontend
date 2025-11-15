@@ -5,7 +5,6 @@ import {
     FieldDescription,
     FieldGroup,
     FieldLabel,
-    FieldSeparator,
 } from '@/components/ui/field';
 import {Input} from '@/components/ui/input';
 import z from 'zod';
@@ -59,6 +58,7 @@ export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
                             id: toastId,
                         });
                         navigate('/verify', {state: {email: data.email}});
+                        return;
                     } else {
                         toast.error('Invalid email or password', {id: toastId});
                     }
@@ -72,6 +72,7 @@ export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
                     toast.error('Your account is blocked or inactive', {
                         id: toastId,
                     });
+                    navigate('/contact-support');
                     break;
 
                 case 410:
@@ -79,6 +80,7 @@ export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
                         'Your account has been deleted. Contact support',
                         {id: toastId},
                     );
+                    navigate('/contact-support');
                     break;
 
                 default:
@@ -158,10 +160,10 @@ export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
                 <Button form='login-form' type='submit'>
                     Login
                 </Button>
-                <FieldSeparator>Or continue with</FieldSeparator>
+                {/* <FieldSeparator>Or continue with</FieldSeparator> */}
                 <Field>
                     {/* github login */}
-                    <Button variant='outline' type='button'>
+                    {/* <Button variant='outline' type='button'>
                         <svg
                             xmlns='http://www.w3.org/2000/svg'
                             viewBox='0 0 24 24'
@@ -172,7 +174,7 @@ export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
                             />
                         </svg>
                         Login with GitHub
-                    </Button>
+                    </Button> */}
                     <FieldDescription className='text-center'>
                         Don&apos;t have an account?{' '}
                         <Link

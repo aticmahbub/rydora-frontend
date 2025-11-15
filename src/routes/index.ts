@@ -8,10 +8,9 @@ import DashboardLayout from '@/layouts/DashboardLayout';
 import {generateRoutes} from '@/utils/generateRoutes';
 import {adminSidebarItems} from './adminSidebarItems';
 import {withAuth} from '@/utils/withAuth';
-import {userSidebarItems} from './userSidebarItems';
 import {riderSidebarItems} from './riderSidebarItems';
 import {driverSidebarItems} from './driverSidebarItems';
-import DriverRegistration from '@/pages/user/DriverRegistration';
+import DriverRegistration from '@/pages/user/driverRegistration/DriverRegistration';
 
 export const router = createBrowserRouter([
     {
@@ -23,12 +22,6 @@ export const router = createBrowserRouter([
         path: '/admin',
         Component: DashboardLayout,
         children: [...generateRoutes(adminSidebarItems)],
-    },
-
-    {
-        path: '/user',
-        Component: withAuth(DashboardLayout, 'USER'),
-        children: [...generateRoutes(userSidebarItems)],
     },
 
     {
