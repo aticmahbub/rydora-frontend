@@ -8,8 +8,10 @@ import {Alert, AlertDescription} from '@/components/ui/alert';
 import {Card, CardContent} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 import {RideHistoryFilters} from '@/components/modules/ride/RideHistoryFilters';
+import {useNavigate} from 'react-router';
 
 export default function RideHistory() {
+    const navigate = useNavigate();
     const [filters, setFilters] = useState({
         page: 1,
         limit: 10,
@@ -25,6 +27,7 @@ export default function RideHistory() {
 
     const handleViewDetails = (rideId: string) => {
         console.log('View ride details:', rideId);
+        navigate(`/rider/ride/${rideId}`);
     };
 
     const handleRetry = () => {

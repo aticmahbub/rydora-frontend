@@ -20,14 +20,10 @@ export const riderSidebarItems: ISidebarItems[] = [
                 url: '/rider/request',
                 component: RequestRide,
             },
-            {
-                title: 'Ride Details',
-                url: '/rider/details',
-                component: RideDetails,
-            },
+
             {
                 title: 'Ride History',
-                url: '/rider/-ride-history',
+                url: '/rider/ride-history',
                 component: RideHistory,
             },
             {
@@ -39,6 +35,12 @@ export const riderSidebarItems: ISidebarItems[] = [
                 title: 'Track Ride',
                 url: '/rider/track',
                 component: TrackRide,
+            },
+
+            {
+                title: 'Ride Details',
+                url: '/rider/details',
+                component: RideDetails,
             },
         ],
     },

@@ -17,7 +17,6 @@ export interface RideHistoryParams {
 
 export const rideApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        //
         requestRide: builder.mutation<IResponse<IRideResponse>, Partial<IRide>>(
             {
                 query: (rideInfo) => ({
@@ -76,29 +75,26 @@ export const rideApi = baseApi.injectEndpoints({
                 };
             },
             providesTags: ['RIDE_HISTORY'],
-            //  (result) => {
-            //     // Handle undefined result
-            //     if (!result?.data?.rides) {
-            //         return ['RIDE_HISTORY'];
-            //     }
-
-            //     return [
-            //         ...result.data.rides.map(({_id}: {_id: string}) => ({
-            //             type: 'RIDE_HISTORY' as const,
-            //             id: _id,
-            //         })),
-            //         'RIDE_HISTORY',
-            //     ];
-            // },
         }),
 
-        getRideStats: builder.query({
-            query: () => ({
-                url: '/rides/stats',
+        getRideDetails: builder.query({
+            query: (rideId) => ({
+                url: `/ride/${rideId}`,
                 method: 'GET',
             }),
-            providesTags: ['RIDE_STATS'],
+
+            // providesTags: (result, error, rideId) => [
+            //     {type: 'RIDE_HISTORY', id: rideId},
+            // ],
         }),
+
+        // getRideStats: builder.query({
+        //     query: () => ({
+        //         url: '/ride/stats',
+        //         method: 'GET',
+        //     }),
+        //     providesTags: ['RIDE_STATS'],
+        // }),
     }),
 });
 
@@ -106,5 +102,6 @@ export const {
     useRequestRideMutation,
     useFindRideQuery,
     useGetRideHistoryQuery,
-    useGetRideStatsQuery,
+    // useGetRideStatsQuery,
+    useGetRideDetailsQuery,
 } = rideApi;

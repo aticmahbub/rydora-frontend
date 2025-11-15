@@ -11,6 +11,7 @@ import {withAuth} from '@/utils/withAuth';
 import {riderSidebarItems} from './riderSidebarItems';
 import {driverSidebarItems} from './driverSidebarItems';
 import DriverRegistration from '@/pages/user/driverRegistration/DriverRegistration';
+import RideDetails from '@/pages/ride/RideDetails';
 
 export const router = createBrowserRouter([
     {
@@ -27,13 +28,18 @@ export const router = createBrowserRouter([
     {
         path: '/rider',
         Component: DashboardLayout,
-        children: [...generateRoutes(riderSidebarItems)],
+        children: [
+            ...generateRoutes(riderSidebarItems),
+            {path: 'ride/:rideId', Component: RideDetails},
+        ],
     },
-
     {
         path: '/driver',
         Component: withAuth(DashboardLayout, 'DRIVER'),
-        children: [...generateRoutes(driverSidebarItems)],
+        children: [
+            ...generateRoutes(driverSidebarItems),
+            {path: 'ride/:rideId', Component: RideDetails},
+        ],
     },
 
     {path: '/login', Component: LoginPage},
