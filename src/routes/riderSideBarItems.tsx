@@ -1,8 +1,8 @@
-import RequestRide from '@/pages/rider/RequestRide';
-import RideDetails from '@/pages/rider/RideDetails';
-import RideHistory from '@/pages/rider/RideHistory';
+import RequestRide from '@/pages/ride/RequestRide';
+import RideDetails from '@/pages/ride/RideDetails';
+import RideHistory from '@/pages/ride/RideHistory';
 import RiderProfile from '@/pages/rider/RiderProfile';
-import TrackRide from '@/pages/rider/TrackRide';
+import TrackRide from '@/pages/ride/TrackRide';
 import DriverRegistration from '@/pages/user/driverRegistration/DriverRegistration';
 import type {ISidebarItems} from '@/types';
 
@@ -27,7 +27,7 @@ export const riderSidebarItems: ISidebarItems[] = [
             },
             {
                 title: 'Ride History',
-                url: 'rider/-ride-history',
+                url: '/rider/-ride-history',
                 component: RideHistory,
             },
             {

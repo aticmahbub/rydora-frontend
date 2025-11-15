@@ -67,7 +67,6 @@ export function DriverRegistrationForm({
 
     const onSubmit = async (data: TVehicleRegistrationForm) => {
         try {
-            // Prepare the registration data
             const registrationData = {
                 drivingLicenseNo: data.drivingLicenseNo,
                 vehicle: {
@@ -80,10 +79,10 @@ export function DriverRegistrationForm({
                 },
             };
 
-            console.log('Submitting driver registration:', registrationData);
+            console.log('driver registration data:', registrationData);
 
-            const result = await driverRegistration(registrationData).unwrap();
-            console.log('Driver registration successful:', result);
+            const res = await driverRegistration(registrationData).unwrap();
+            console.log('res:', res);
 
             setIsSubmitted(true);
             form.reset();
@@ -170,7 +169,7 @@ export function DriverRegistrationForm({
                     >
                         <FieldGroup>
                             <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
-                                {/* Left Column - Driver & Vehicle Info */}
+                                {/* left column - driver & vehicle info */}
                                 <div className='space-y-6'>
                                     {/* Driver Information */}
                                     <div className='space-y-4'>
@@ -204,7 +203,7 @@ export function DriverRegistrationForm({
                                         />
                                     </div>
 
-                                    {/* Vehicle Basic Information */}
+                                    {/* vehicle  */}
                                     <div className='space-y-4'>
                                         <h3 className='text-lg font-semibold text-gray-900 border-b pb-2'>
                                             Vehicle Information
@@ -340,7 +339,7 @@ export function DriverRegistrationForm({
                                     </div>
                                 </div>
 
-                                {/* Right Column - Specifications & Insurance */}
+                                {/* Right Column */}
                                 <div className='space-y-6'>
                                     {/* Vehicle Specifications */}
                                     <div className='space-y-4'>
@@ -384,7 +383,7 @@ export function DriverRegistrationForm({
                                         </div>
                                     </div>
 
-                                    {/* Insurance Information */}
+                                    {/* insurance information */}
                                     <div className='space-y-4'>
                                         <h3 className='text-lg font-semibold text-gray-900 border-b pb-2'>
                                             Insurance Information
@@ -510,7 +509,7 @@ export function DriverRegistrationForm({
                                 </div>
                             </div>
 
-                            {/* Submit Button */}
+                            {/* submit button */}
                             <div className='flex gap-3 pt-6 border-t'>
                                 <Button
                                     type='submit'

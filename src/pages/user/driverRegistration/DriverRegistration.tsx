@@ -3,7 +3,7 @@ import {useUserInfoQuery} from '@/redux/features/user/user.api';
 import {Spinner} from '@/components/ui/Spinner';
 import {DriverRegistrationForm} from '@/components/modules/user/registration/DriverRegistrationForm';
 import {Alert, AlertDescription} from '@/components/ui/alert';
-import AlreadyDriver from './driverRegistration/AlreadyDriver';
+import AlreadyDriver from './AlreadyDriver';
 
 export default function DriverRegistration() {
     const {data: userData, isLoading, error} = useUserInfoQuery(undefined);
@@ -45,7 +45,7 @@ export default function DriverRegistration() {
     }
 
     return (
-        <div className='min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 py-8'>
+        <div className='min-h-screen bg-liffnear-to-br from-blue-50 to-indigo-100 py-8'>
             <div className='container mx-auto px-4'>
                 <div className='text-center mb-8'>
                     <h1 className='text-4xl font-bold text-gray-900 mb-4'>

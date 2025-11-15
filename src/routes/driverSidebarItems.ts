@@ -1,9 +1,9 @@
 import DriverAvailability from '@/pages/driver/DriverAvailability';
 import DriverEarnings from '@/pages/driver/DriverEarnings';
 import DriverProfile from '@/pages/driver/DriverProfile';
-import DriverRideHistory from '@/pages/driver/DriverRideHistory';
 import ManageRides from '@/pages/driver/ManageRides';
 import FindRide from '@/pages/ride/FindRide';
+import RideHistory from '@/pages/ride/RideHistory';
 import type {ISidebarItems} from '@/types';
 
 export const driverSidebarItems: ISidebarItems[] = [
@@ -33,7 +33,7 @@ export const driverSidebarItems: ISidebarItems[] = [
             {
                 title: 'Driver Ride History',
                 url: '/driver/ride-history',
-                component: DriverRideHistory,
+                component: RideHistory,
             },
             {
                 title: 'Manage Rides',

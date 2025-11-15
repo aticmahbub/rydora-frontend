@@ -18,3 +18,7 @@ export const PaymentStatus = {
     FAILED: 'FAILED',
     REFUNDED: 'REFUNDED',
 };
+
+export type Role = (typeof role)[keyof typeof role];
+export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod];
+export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus];

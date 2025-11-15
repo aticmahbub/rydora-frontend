@@ -1,4 +1,6 @@
 export const RideStatus = {
+    ALL: 'ALL',
+    IN_PROGRESS: 'IN_PROGRESS',
     REQUESTED: 'REQUESTED',
     ACCEPTED: 'ACCEPTED',
     ONGOING: 'ONGOING',

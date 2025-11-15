@@ -14,7 +14,6 @@ export function coordinatesToGeoPoint(
 }
 
 //   Convert IGeoPoint to ICoordinates
-
 export function geoPointToCoordinates(geoPoint: IGeoPoint): ICoordinates {
     if (!geoPoint.coordinates || geoPoint.coordinates.length < 2) {
         throw new Error('Invalid GeoPoint coordinates');

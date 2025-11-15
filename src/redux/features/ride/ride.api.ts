@@ -1,6 +1,8 @@
+import type {TRideStatus} from '@/constants/rideStatus';
 import {baseApi} from '@/redux/baseApi';
 import type {IResponse} from '@/types';
 import type {IRide, IRideResponse} from '@/types';
+import type {IRideHistoryResponse} from '@/types/ride.types';
 
 export interface RideHistoryParams {
     page?: number;
@@ -10,7 +12,7 @@ export interface RideHistoryParams {
     endDate?: string;
     minFare?: number;
     maxFare?: number;
-    status?: string;
+    status?: TRideStatus;
 }
 
 export const rideApi = baseApi.injectEndpoints({
@@ -25,6 +27,7 @@ export const rideApi = baseApi.injectEndpoints({
                 }),
             },
         ),
+
         findRide: builder.query({
             query: () => ({
                 url: '/ride/find',
@@ -33,10 +36,23 @@ export const rideApi = baseApi.injectEndpoints({
             providesTags: ['RIDE'],
         }),
 
-        getRideHistory: builder.query({
-            query: (params: RideHistoryParams = {}) => {
+        getRideHistory: builder.query<
+            {success: boolean; data: IRideHistoryResponse},
+            {
+                page?: number;
+                limit?: number;
+                search?: string;
+                startDate?: string;
+                endDate?: string;
+                minFare?: number;
+                maxFare?: number;
+                status?: string;
+            }
+        >({
+            query: (params = {}) => {
                 const searchParams = new URLSearchParams();
 
+                // all filter parameters
                 if (params.page)
                     searchParams.append('page', params.page.toString());
                 if (params.limit)
@@ -50,14 +66,30 @@ export const rideApi = baseApi.injectEndpoints({
                     searchParams.append('minFare', params.minFare.toString());
                 if (params.maxFare)
                     searchParams.append('maxFare', params.maxFare.toString());
-                if (params.status) searchParams.append('status', params.status);
+                if (params.status && params.status !== 'ALL')
+                    searchParams.append('status', params.status);
 
+                const queryString = searchParams.toString();
                 return {
-                    url: `/rides/history?${searchParams.toString()}`,
+                    url: `/ride/history${queryString ? `?${queryString}` : ''}`,
                     method: 'GET',
                 };
             },
             providesTags: ['RIDE_HISTORY'],
+            //  (result) => {
+            //     // Handle undefined result
+            //     if (!result?.data?.rides) {
+            //         return ['RIDE_HISTORY'];
+            //     }
+
+            //     return [
+            //         ...result.data.rides.map(({_id}: {_id: string}) => ({
+            //             type: 'RIDE_HISTORY' as const,
+            //             id: _id,
+            //         })),
+            //         'RIDE_HISTORY',
+            //     ];
+            // },
         }),
 
         getRideStats: builder.query({
