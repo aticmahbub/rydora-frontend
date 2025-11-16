@@ -48,8 +48,9 @@ export default function Navbar() {
     ];
 
     const handleLogout = async () => {
-        await logout(undefined);
+        const res = await logout(undefined);
         dispatch(authApi.util.resetApiState());
+        console.log(res);
     };
     return (
         <section className='py-4 sticky top-0 z-50 backdrop-blur bg-white/70 border-b'>

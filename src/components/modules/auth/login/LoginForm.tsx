@@ -40,20 +40,23 @@ export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
             console.log(res.data.user.role);
             if (res.data.user) {
                 toast.success('Logged in to your account', {id: toastId});
-                switch (res.data.user.role) {
-                    case role.RIDER:
-                        navigate('/rider');
-                        break;
-                    case role.DRIVER:
-                        navigate('/driver');
-                        break;
-                    case role.ADMIN:
-                        navigate('/admin');
-                        break;
-                    default:
-                        toast.error('Unknown user role', {id: toastId});
-                        break;
-                }
+
+                setTimeout(() => {
+                    switch (res.data.user.role) {
+                        case role.RIDER:
+                            navigate('/rider');
+                            break;
+                        case role.DRIVER:
+                            navigate('/driver');
+                            break;
+                        case role.ADMIN:
+                            navigate('/admin');
+                            break;
+                        default:
+                            toast.error('Unknown user role', {id: toastId});
+                            break;
+                    }
+                }, 500);
             } else {
                 toast.error('Failed to logged in to your account', {
                     id: toastId,
