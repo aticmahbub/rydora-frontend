@@ -6,13 +6,13 @@ import {Link} from 'react-router';
 
 const HeroSection = () => {
     return (
-        <section className='h-full  w-screen overflow-hidden py-2'>
+        <section className='w-screen overflow-hidden py-2'>
             <div className='container  border-b border-t border-dashed'>
                 <div className='relative flex w-full max-w-5xl flex-col justify-start border border-t-0 border-dashed px-5 py-12 md:items-center md:justify-center lg:mx-auto'>
-                    <p className='text-muted-foreground flex items-center gap-2 gap-3 text-sm'>
+                    <p className='text-muted-foreground flex items-center gap-2  text-sm'>
                         Welcome to Rydora
                     </p>
-                    <div className='mb-7 mt-3 w-full max-w-xl text-5xl font-medium font-semibold tracking-tighter md:mb-10 md:text-center md:text-6xl lg:relative lg:mb-0 lg:text-left lg:text-7xl'>
+                    <div className='mb-7 mt-3 w-full max-w-xl text-5xl font-medium  tracking-tighter md:mb-10 md:text-center md:text-6xl lg:relative lg:mb-0 lg:text-left lg:text-7xl'>
                         <h1 className='relative z-10 inline md:mr-3'>
                             Where every ride you take{' '}
                             <br className='block md:hidden' /> feels{' '}
