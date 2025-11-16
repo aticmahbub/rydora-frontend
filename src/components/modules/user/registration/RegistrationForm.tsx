@@ -52,8 +52,8 @@ export function RegistrationForm({
         const userInfo = {
             name: data.name,
             email: data.email,
-            NID: data.NID as number,
-            password: data.confirmPassword,
+            NID: data.NID,
+            password: data.password,
             role: data.role,
         };
         try {

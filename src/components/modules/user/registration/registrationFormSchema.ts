@@ -8,9 +8,7 @@ export const registrationFormSchema = z
             .min(2, {message: 'Name must be at least 2 characters long'})
             .max(20, {message: 'Name cannot exceed 20 characters'}),
         email: z.email({message: 'Invalid email'}),
-        NID: z.coerce
-            .number()
-            .min(1, {message: 'NID is required and must be a valid number'}),
+        NID: z.string({message: 'NID is required and must be a valid number'}),
         password: z
             .string()
             .min(8, {message: 'Password must be at least 8 characters long'})
@@ -22,7 +20,7 @@ export const registrationFormSchema = z
                 message: 'Must contain at least one special character',
             })
             .regex(/^(?=.*\d)/, {message: 'Must contain at least one number'}),
-        confirmPassword: z.string(),
+        confirmPassword: z.string().optional(),
         role: z.enum([...Object.values(role)]),
     })
     .refine((data) => data.password === data.confirmPassword, {
@@ -30,4 +28,4 @@ export const registrationFormSchema = z
         path: ['confirmPassword'],
     });
 
-export type RegistrationFormData = z.input<typeof registrationFormSchema>;
+export type RegistrationFormData = z.infer<typeof registrationFormSchema>;
