@@ -1,7 +1,8 @@
+import config from '@/config';
 import axios from 'axios';
 
 export const axiosInstance = axios.create({
-    baseURL: 'https://rydora-backend.vercel.app/api/v1',
+    baseURL: config.baseUrl,
     withCredentials: true,
 });
 

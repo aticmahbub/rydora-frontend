@@ -11,11 +11,9 @@ import {
 import {Button} from '@/components/ui/button';
 import {
     NavigationMenu,
-    NavigationMenuContent,
     NavigationMenuItem,
     NavigationMenuLink,
     NavigationMenuList,
-    NavigationMenuTrigger,
     navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
 import {
@@ -43,6 +41,9 @@ export default function Navbar() {
     const navLinks = [
         {href: '/', label: 'Home', role: 'PUBLIC'},
         {href: '/about', label: 'About', role: 'PUBLIC'},
+        {href: '/pricing', label: 'Pricing', role: 'PUBLIC'},
+        {href: '/how-it-works', label: 'How it works', role: 'PUBLIC'},
+        {href: '/faqs', label: 'FAQs', role: 'PUBLIC'},
         {href: '/contact', label: 'Contact', role: 'PUBLIC'},
 
         {href: '/admin', label: 'Dashboard', role: role.ADMIN},
@@ -51,30 +52,30 @@ export default function Navbar() {
         {href: '/rider', label: 'Dashboard', role: role.RIDER},
         {href: '/driver', label: 'Dashboard', role: role.DRIVER},
     ];
-    const features = [
-        {
-            title: 'Dashboard',
-            description: 'Overview of your activity',
-            href: '#',
-        },
-        {
-            title: 'Analytics',
-            description: 'Track your performance',
-            href: '#',
-        },
-        {
-            title: 'Settings',
-            description: 'Configure your preferences',
-            href: '#',
-        },
-    ];
+    // const features = [
+    //     {
+    //         title: 'Dashboard',
+    //         description: 'Overview of your activity',
+    //         href: '#',
+    //     },
+    //     {
+    //         title: 'Analytics',
+    //         description: 'Track your performance',
+    //         href: '#',
+    //     },
+    //     {
+    //         title: 'Settings',
+    //         description: 'Configure your preferences',
+    //         href: '#',
+    //     },
+    // ];
 
     const handleLogout = async () => {
         await logout(undefined);
         dispatch(authApi.util.resetApiState());
     };
     return (
-        <section className='py-4 '>
+        <section className='py-4 sticky top-0 z-50 backdrop-blur bg-white/70 border-b'>
             <div className='container mx-auto'>
                 <nav className='flex items-center justify-between'>
                     <Link to='/' className='flex items-center gap-2'>
@@ -86,7 +87,7 @@ export default function Navbar() {
                     <NavigationMenu className='hidden lg:block'>
                         <NavigationMenuList>
                             {/* Features */}
-                            <NavigationMenuItem>
+                            {/* <NavigationMenuItem>
                                 <NavigationMenuTrigger>
                                     Features
                                 </NavigationMenuTrigger>
@@ -110,7 +111,7 @@ export default function Navbar() {
                                         ))}
                                     </div>
                                 </NavigationMenuContent>
-                            </NavigationMenuItem>
+                            </NavigationMenuItem> */}
 
                             {navLinks.map((item, idx) => (
                                 <div key={idx}>
@@ -199,7 +200,7 @@ export default function Navbar() {
                                         </AccordionTrigger>
                                         <AccordionContent>
                                             <div className='grid md:grid-cols-2'>
-                                                {features.map(
+                                                {/* {features.map(
                                                     (feature, index) => (
                                                         <a
                                                             href={feature.href}
@@ -224,7 +225,7 @@ export default function Navbar() {
                                                             </div>
                                                         </a>
                                                     ),
-                                                )}
+                                                )} */}
                                             </div>
                                         </AccordionContent>
                                     </AccordionItem>

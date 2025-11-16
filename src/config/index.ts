@@ -1,5 +1,6 @@
 const config = {
-    baseUrl: 'https://rydora-backend.vercel.app/api/v1',
+    baseUrl: import.meta.env.VITE_BASE_URL,
 };
+console.log(config);
 
 export default config;

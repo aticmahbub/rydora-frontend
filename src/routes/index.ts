@@ -12,12 +12,22 @@ import {riderSidebarItems} from './riderSidebarItems';
 import {driverSidebarItems} from './driverSidebarItems';
 import DriverRegistration from '@/pages/user/driverRegistration/DriverRegistration';
 import RideDetails from '@/pages/ride/RideDetails';
+import Pricing from '@/pages/public/Pricing';
+import HowItWorks from '@/pages/public/HowItWorks';
+import FAQs from '@/pages/public/FAQs';
+import Contact from '@/pages/public/Contact';
 
 export const router = createBrowserRouter([
     {
         path: '/',
         Component: App,
-        children: [{path: 'about', Component: About}],
+        children: [
+            {path: 'about', Component: About},
+            {path: 'pricing', Component: Pricing},
+            {path: 'how-it-works', Component: HowItWorks},
+            {path: 'faqs', Component: FAQs},
+            {path: 'contact', Component: Contact},
+        ],
     },
     {
         path: '/admin',
