@@ -2,12 +2,7 @@ import Logo from '../assets/icons/Logo';
 
 import {MenuIcon} from 'lucide-react';
 
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from '@/components/ui/accordion';
+import {Accordion, AccordionItem} from '@/components/ui/accordion';
 import {Button} from '@/components/ui/button';
 import {
     NavigationMenu,
@@ -52,23 +47,6 @@ export default function Navbar() {
         {href: '/rider', label: 'Dashboard', role: role.RIDER},
         {href: '/driver', label: 'Dashboard', role: role.DRIVER},
     ];
-    // const features = [
-    //     {
-    //         title: 'Dashboard',
-    //         description: 'Overview of your activity',
-    //         href: '#',
-    //     },
-    //     {
-    //         title: 'Analytics',
-    //         description: 'Track your performance',
-    //         href: '#',
-    //     },
-    //     {
-    //         title: 'Settings',
-    //         description: 'Configure your preferences',
-    //         href: '#',
-    //     },
-    // ];
 
     const handleLogout = async () => {
         await logout(undefined);
@@ -86,33 +64,6 @@ export default function Navbar() {
                     </Link>
                     <NavigationMenu className='hidden lg:block'>
                         <NavigationMenuList>
-                            {/* Features */}
-                            {/* <NavigationMenuItem>
-                                <NavigationMenuTrigger>
-                                    Features
-                                </NavigationMenuTrigger>
-                                <NavigationMenuContent>
-                                    <div className='grid w-[600px] grid-cols-2 p-3'>
-                                        {features.map((feature, index) => (
-                                            <NavigationMenuLink
-                                                href={feature.href}
-                                                key={index}
-                                                className='hover:bg-muted/70 rounded-md p-3 transition-colors'
-                                            >
-                                                <div key={feature.title}>
-                                                    <p className='text-foreground mb-1 font-semibold'>
-                                                        {feature.title}
-                                                    </p>
-                                                    <p className='text-muted-foreground text-sm'>
-                                                        {feature.description}
-                                                    </p>
-                                                </div>
-                                            </NavigationMenuLink>
-                                        ))}
-                                    </div>
-                                </NavigationMenuContent>
-                            </NavigationMenuItem> */}
-
                             {navLinks.map((item, idx) => (
                                 <div key={idx}>
                                     {item.role === 'PUBLIC' && (
@@ -147,7 +98,7 @@ export default function Navbar() {
                     <div className='hidden items-center gap-4 lg:flex'>
                         <ModeToggle />
                         {!data?.data?.email && (
-                            <div>
+                            <div className='flex gap-2'>
                                 <Button variant='outline'>
                                     <Link to='/login'>Login</Link>
                                 </Button>
@@ -185,6 +136,7 @@ export default function Navbar() {
                                     </Link>
                                 </SheetTitle>
                             </SheetHeader>
+
                             <div className='flex flex-col p-4'>
                                 <Accordion
                                     type='single'
@@ -194,61 +146,58 @@ export default function Navbar() {
                                     <AccordionItem
                                         value='solutions'
                                         className='border-none'
-                                    >
-                                        <AccordionTrigger className='text-base hover:no-underline'>
-                                            Features
-                                        </AccordionTrigger>
-                                        <AccordionContent>
-                                            <div className='grid md:grid-cols-2'>
-                                                {/* {features.map(
-                                                    (feature, index) => (
-                                                        <a
-                                                            href={feature.href}
-                                                            key={index}
-                                                            className='hover:bg-muted/70 rounded-md p-3 transition-colors'
-                                                        >
-                                                            <div
-                                                                key={
-                                                                    feature.title
-                                                                }
-                                                            >
-                                                                <p className='text-foreground mb-1 font-semibold'>
-                                                                    {
-                                                                        feature.title
-                                                                    }
-                                                                </p>
-                                                                <p className='text-muted-foreground text-sm'>
-                                                                    {
-                                                                        feature.description
-                                                                    }
-                                                                </p>
-                                                            </div>
-                                                        </a>
-                                                    ),
-                                                )} */}
-                                            </div>
-                                        </AccordionContent>
-                                    </AccordionItem>
+                                    ></AccordionItem>
                                 </Accordion>
-                                <div className='flex flex-col gap-6'>
-                                    <a href='#' className='font-medium'>
-                                        Templates
-                                    </a>
-                                    <a href='#' className='font-medium'>
-                                        Blog
-                                    </a>
-                                    <a href='#' className='font-medium'>
-                                        Pricing
-                                    </a>
-                                </div>
-                                <div className='mt-6 flex flex-col gap-4'>
-                                    <ModeToggle />
-                                    <div>
-                                        {' '}
-                                        <Button variant='outline'>Login</Button>
-                                        <Button>Register</Button>
-                                    </div>
-                                </div>
+
+                                {/* Wrap mobile nav links inside NavigationMenu */}
+                                <NavigationMenu>
+                                    <NavigationMenuList className='flex flex-col gap-6'>
+                                        {navLinks.map(
+                                            (item) =>
+                                                (item.role === 'PUBLIC' ||
+                                                    item.role ===
+                                                        data?.data?.role) && (
+                                                    <NavigationMenuItem
+                                                        key={item.href}
+                                                    >
+                                                        <NavigationMenuLink
+                                                            asChild
+                                                            className={navigationMenuTriggerStyle()}
+                                                        >
+                                                            <Link
+                                                                to={item.href}
+                                                            >
+                                                                {item.label}
+                                                            </Link>
+                                                        </NavigationMenuLink>
+                                                    </NavigationMenuItem>
+                                                ),
+                                        )}
+                                        <div className='mt-6 flex flex-col gap-4'>
+                                            {!data?.data?.email ? (
+                                                <div className='flex flex-col gap-2'>
+                                                    <Button variant='outline'>
+                                                        <Link to='/login'>
+                                                            Login
+                                                        </Link>
+                                                    </Button>
+                                                    <Button>
+                                                        <Link to='/registration'>
+                                                            Register
+                                                        </Link>
+                                                    </Button>
+                                                </div>
+                                            ) : (
+                                                <Button
+                                                    onClick={handleLogout}
+                                                    variant='outline'
+                                                >
+                                                    Logout
+                                                </Button>
+                                            )}
+                                        </div>
+                                    </NavigationMenuList>
+                                </NavigationMenu>
                             </div>
                         </SheetContent>
                     </Sheet>
