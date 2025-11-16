@@ -1,16 +1,14 @@
 export type {
-    IResponse,
+    Response,
     IErrorResponse,
     IErr,
     IGenericErrorResponse,
 } from './response.types';
 
 export type {
-    ILoginData,
-    ILoginFormData,
-    IRegisterFormData,
-    IUserData,
-    ICurrentLocation,
+    LoginResponseData,
+    UserData,
+    CurrentLocation,
     IAuth,
 } from './auth.types';
 

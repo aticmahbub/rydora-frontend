@@ -7,12 +7,14 @@ import {
     FieldLabel,
 } from '@/components/ui/field';
 import {Input} from '@/components/ui/input';
-import z from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {Controller, useForm} from 'react-hook-form';
 import {Link, useNavigate} from 'react-router';
 import Password from '@/components/ui/password-strength-indicator';
-import {registrationFormSchema} from './registrationFormSchema';
+import {
+    registrationFormSchema,
+    type RegistrationFormData,
+} from './registrationFormSchema';
 import {toast} from 'sonner';
 import {useRegisterMutation} from '@/redux/features/user/user.api';
 import {
@@ -33,7 +35,7 @@ export function RegistrationForm({
     const [register] = useRegisterMutation();
     const navigate = useNavigate();
 
-    const form = useForm<z.input<typeof registrationFormSchema>>({
+    const form = useForm<RegistrationFormData>({
         resolver: zodResolver(registrationFormSchema),
         defaultValues: {
             name: '',
@@ -45,7 +47,7 @@ export function RegistrationForm({
         },
     });
 
-    const onSubmit = async (data: z.input<typeof registrationFormSchema>) => {
+    const onSubmit = async (data: RegistrationFormData) => {
         const toastId = toast.loading('Creating account...');
         const userInfo = {
             name: data.name,

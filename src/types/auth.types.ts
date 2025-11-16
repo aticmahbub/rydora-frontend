@@ -1,20 +1,4 @@
-export interface ILoginFormData {
-    email: string;
-    password: string;
-}
-export interface IRegisterFormData {
-    name: string;
-    email: string;
-    NID: number;
-    password: string;
-}
-
-export interface ILoginData {
-    accessToken: string;
-    refreshToken: string;
-    user: IUserData;
-}
-export interface ICurrentLocation {
+export interface CurrentLocation {
     type: string;
     coordinates: number[];
     updatedAt: string;
@@ -25,8 +9,14 @@ export interface IAuth {
     providerId: string;
 }
 
-export interface IUserData {
-    currentLocation: ICurrentLocation;
+export interface LoginResponseData {
+    accessToken: string;
+    refreshToken: string;
+    user: UserData;
+}
+
+export interface UserData {
+    currentLocation: CurrentLocation;
     _id: string;
     name: string;
     email: string;

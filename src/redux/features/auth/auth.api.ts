@@ -1,12 +1,13 @@
+import type {LoginFormData} from '@/components/modules/auth/login/loginFormSchema';
 import {baseApi} from '@/redux/baseApi';
-import type {ILoginFormData, IUserData} from '@/types';
+import type {LoginResponseData} from '@/types';
 
-import type {IResponse} from '@/types/response.types';
+import type {Response} from '@/types/response.types';
 
 export const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         //
-        login: builder.mutation<IResponse<IUserData>, ILoginFormData>({
+        login: builder.mutation<Response<LoginResponseData>, LoginFormData>({
             query: (userInfo) => ({
                 url: '/auth/login',
                 method: 'POST',

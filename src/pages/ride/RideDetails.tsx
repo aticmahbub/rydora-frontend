@@ -22,7 +22,7 @@ export default function RideDetails() {
     const {rideId} = useParams<{rideId: string}>();
     const navigate = useNavigate();
     const {
-        data: apiResponse,
+        data: apResponse,
         isLoading,
         error,
         refetch,
@@ -32,7 +32,7 @@ export default function RideDetails() {
         return <Spinner />;
     }
 
-    const ride = apiResponse?.data;
+    const ride = apResponse?.data;
 
     const driver = ride?.driverId as any;
 

@@ -13,8 +13,9 @@ import {Controller, useForm} from 'react-hook-form';
 import {Link, useNavigate} from 'react-router';
 import {useLoginMutation} from '@/redux/features/auth/auth.api';
 import {toast} from 'sonner';
-import {loginFormSchema} from './loginFormSchema';
+import {loginFormSchema, type LoginFormData} from './loginFormSchema';
 import type {IErrorResponse} from '@/types';
+import {role} from '@/constants/role';
 
 export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
     const navigate = useNavigate();
@@ -28,7 +29,7 @@ export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
         },
     });
 
-    const onSubmit = async (data: z.infer<typeof loginFormSchema>) => {
+    const onSubmit = async (data: LoginFormData) => {
         const toastId = toast.loading('Logging in to your account...');
 
         const userInfo = {email: data.email, password: data.password};
@@ -36,16 +37,30 @@ export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
 
         try {
             const res = await login(userInfo).unwrap();
-            if (res.data) {
+            console.log(res.data.user.role);
+            if (res.data.user) {
                 toast.success('Logged in to your account', {id: toastId});
-                console.log(res);
-                navigate('/');
+                switch (res.data.user.role) {
+                    case role.RIDER:
+                        navigate('/rider');
+                        break;
+                    case role.DRIVER:
+                        navigate('/driver');
+                        break;
+                    case role.ADMIN:
+                        navigate('/admin');
+                        break;
+                    default:
+                        toast.error('Unknown user role', {id: toastId});
+                        break;
+                }
             } else {
                 toast.error('Failed to logged in to your account', {
                     id: toastId,
                 });
             }
         } catch (err) {
+            console.log(err);
             const error = err as IErrorResponse;
 
             const message = error?.data.message;

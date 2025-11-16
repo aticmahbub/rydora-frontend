@@ -1,6 +1,6 @@
 import type {TRideStatus} from '@/constants/rideStatus';
 import {baseApi} from '@/redux/baseApi';
-import type {IResponse} from '@/types';
+import type {Response} from '@/types';
 import type {IRide, IRideResponse} from '@/types';
 import type {IRideHistoryResponse} from '@/types/ride.types';
 
@@ -17,15 +17,13 @@ export interface RideHistoryParams {
 
 export const rideApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        requestRide: builder.mutation<IResponse<IRideResponse>, Partial<IRide>>(
-            {
-                query: (rideInfo) => ({
-                    url: '/ride/request',
-                    method: 'POST',
-                    data: rideInfo,
-                }),
-            },
-        ),
+        requestRide: builder.mutation<Response<IRideResponse>, Partial<IRide>>({
+            query: (rideInfo) => ({
+                url: '/ride/request',
+                method: 'POST',
+                data: rideInfo,
+            }),
+        }),
 
         findRide: builder.query({
             query: () => ({

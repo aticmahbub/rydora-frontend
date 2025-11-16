@@ -31,7 +31,6 @@ export default function Navbar() {
     const {data} = useUserInfoQuery(undefined);
     const [logout] = useLogoutMutation();
     console.log(data?.data);
-    console.log(data?.data?.role);
 
     const navLinks = [
         {href: '/', label: 'Home', role: 'PUBLIC'},
@@ -173,29 +172,39 @@ export default function Navbar() {
                                                     </NavigationMenuItem>
                                                 ),
                                         )}
-                                        <div className='mt-6 flex flex-col gap-4'>
-                                            {!data?.data?.email ? (
-                                                <div className='flex flex-col gap-2'>
-                                                    <Button variant='outline'>
-                                                        <Link to='/login'>
-                                                            Login
-                                                        </Link>
-                                                    </Button>
-                                                    <Button>
-                                                        <Link to='/registration'>
-                                                            Register
-                                                        </Link>
-                                                    </Button>
-                                                </div>
-                                            ) : (
-                                                <Button
-                                                    onClick={handleLogout}
-                                                    variant='outline'
-                                                >
-                                                    Logout
-                                                </Button>
-                                            )}
-                                        </div>
+                                        <NavigationMenuItem>
+                                            <div className='mt-6 flex flex-col gap-4'>
+                                                {!data?.data?.email ? (
+                                                    <div className='flex flex-col gap-2'>
+                                                        <NavigationMenuLink>
+                                                            <Button variant='outline'>
+                                                                <Link to='/login'>
+                                                                    Login
+                                                                </Link>
+                                                            </Button>
+                                                        </NavigationMenuLink>
+                                                        <NavigationMenuLink>
+                                                            <Button>
+                                                                <Link to='/registration'>
+                                                                    Register
+                                                                </Link>
+                                                            </Button>
+                                                        </NavigationMenuLink>
+                                                    </div>
+                                                ) : (
+                                                    <NavigationMenuLink>
+                                                        <Button
+                                                            onClick={
+                                                                handleLogout
+                                                            }
+                                                            variant='outline'
+                                                        >
+                                                            Logout
+                                                        </Button>
+                                                    </NavigationMenuLink>
+                                                )}
+                                            </div>
+                                        </NavigationMenuItem>
                                     </NavigationMenuList>
                                 </NavigationMenu>
                             </div>

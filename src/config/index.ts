@@ -1,5 +1,5 @@
 const config = {
-    baseUrl: import.meta.env.VITE_BASE_URL,
+    baseUrl: import.meta.env.VITE_BACKEND_URL,
 };
 console.log(config);
 

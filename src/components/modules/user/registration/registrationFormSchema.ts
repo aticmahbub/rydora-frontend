@@ -29,3 +29,5 @@ export const registrationFormSchema = z
         message: 'Passwords do not match',
         path: ['confirmPassword'],
     });
+
+export type RegistrationFormData = z.input<typeof registrationFormSchema>;
