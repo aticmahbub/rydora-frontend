@@ -90,7 +90,12 @@ export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
                     toast.error('Your account is blocked or inactive', {
                         id: toastId,
                     });
-                    navigate('/contact-support');
+                    navigate('/restriction', {
+                        state: {
+                            message: 'Your account is blocked or inactive',
+                            status: 'Blocked',
+                        },
+                    });
                     break;
 
                 case 410:
@@ -98,7 +103,14 @@ export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
                         'Your account has been deleted. Contact support',
                         {id: toastId},
                     );
-                    navigate('/contact-support');
+                    navigate('/restriction', {
+                        state: {
+                            state: {
+                                message: 'Your account is deleted',
+                                status: 'Deleted',
+                            },
+                        },
+                    });
                     break;
 
                 default:
@@ -106,6 +118,7 @@ export function LoginForm({className, ...props}: React.ComponentProps<'form'>) {
                         'Something went wrong. Please try again later.',
                         {id: toastId},
                     );
+                    navigate('/restriction');
                     break;
             }
         }

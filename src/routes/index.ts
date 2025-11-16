@@ -17,6 +17,10 @@ import HowItWorks from '@/pages/public/HowItWorks';
 import FAQs from '@/pages/public/FAQs';
 import Contact from '@/pages/public/Contact';
 import HomePage from '@/pages/public/HomePage';
+import Analytics from '@/pages/Analytics';
+import RequestRide from '@/pages/ride/RequestRide';
+import FindRide from '@/pages/ride/FindRide';
+import Restriction from '@/pages/Restriction';
 
 export const router = createBrowserRouter([
     {
@@ -25,6 +29,7 @@ export const router = createBrowserRouter([
 
         children: [
             {index: true, Component: HomePage},
+
             {path: 'about', Component: About},
             {path: 'pricing', Component: Pricing},
             {path: 'how-it-works', Component: HowItWorks},
@@ -35,13 +40,19 @@ export const router = createBrowserRouter([
     {
         path: '/admin',
         Component: DashboardLayout,
-        children: [...generateRoutes(adminSidebarItems)],
+        children: [
+            {index: true, Component: Analytics},
+
+            ...generateRoutes(adminSidebarItems),
+        ],
     },
 
     {
         path: '/rider',
         Component: DashboardLayout,
         children: [
+            {index: true, Component: RequestRide},
+
             ...generateRoutes(riderSidebarItems),
             {path: 'ride/:rideId', Component: RideDetails},
         ],
@@ -50,8 +61,10 @@ export const router = createBrowserRouter([
         path: '/driver',
         Component: withAuth(DashboardLayout, 'DRIVER'),
         children: [
-            ...generateRoutes(driverSidebarItems),
+            {index: true, Component: FindRide},
+
             {path: 'ride/:rideId', Component: RideDetails},
+            ...generateRoutes(driverSidebarItems),
         ],
     },
 
@@ -59,4 +72,5 @@ export const router = createBrowserRouter([
     {path: '/registration', Component: RegistrationPage},
     {path: '/driver-registration', Component: DriverRegistration},
     {path: '/verify', Component: VerifyPage},
+    {path: '/restriction', Component: Restriction},
 ]);
