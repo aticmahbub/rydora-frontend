@@ -1,9 +1,10 @@
 import {FaFacebook, FaInstagram, FaLinkedin, FaTwitter} from 'react-icons/fa';
+import siteLogo from '../assets/icons/site-icon.png';
 
 interface FooterProps {
     logo?: {
         url: string;
-        src: string;
+        src?: string;
         alt: string;
         title: string;
     };
@@ -29,27 +30,28 @@ const defaultSections = [
         title: 'Product',
         links: [
             {name: 'Overview', href: '#'},
+            {name: 'Book a Ride', href: '#'},
+            {name: 'Driver Signup', href: '#'},
             {name: 'Pricing', href: '#'},
-            {name: 'Marketplace', href: '#'},
-            {name: 'Features', href: '#'},
+            {name: 'How it works', href: '#'},
         ],
     },
     {
         title: 'Company',
         links: [
-            {name: 'About', href: '#'},
-            {name: 'Team', href: '#'},
+            {name: 'About Rydora', href: '#'},
             {name: 'Blog', href: '#'},
+            {name: 'Press & Media', href: '#'},
             {name: 'Careers', href: '#'},
         ],
     },
     {
-        title: 'Resources',
+        title: 'Legal',
         links: [
-            {name: 'Help', href: '#'},
-            {name: 'Sales', href: '#'},
-            {name: 'Advertise', href: '#'},
-            {name: 'Privacy', href: '#'},
+            {name: 'Terms of Service', href: '#'},
+            {name: 'Privacy Policy', href: '#'},
+            {name: 'Cookie Policy', href: '#'},
+            {name: 'Data Processing', href: '#'},
         ],
     },
 ];
@@ -68,15 +70,15 @@ const defaultLegalLinks = [
 
 export default function Footer({
     logo = {
-        url: 'https://www.shadcnblocks.com',
-        src: 'https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/shadcnblockscom-icon.svg',
+        url: '/',
+        // src: '../assets/icons/site-icon.png',
         alt: 'logo',
-        title: 'Shadcnblocks.com',
+        title: 'Rydora',
     },
     sections = defaultSections,
-    description = 'A collection of components for your startup business or side project.',
+    description = 'Mobility that adapts to you, not the other way around.',
     socialLinks = defaultSocialLinks,
-    copyright = '© 2024 Shadcnblocks.com. All rights reserved.',
+    copyright = '© 2024 Rydora.com. All rights reserved.',
     legalLinks = defaultLegalLinks,
 }: FooterProps) {
     return (
@@ -88,7 +90,7 @@ export default function Footer({
                         <div className='flex items-center gap-2 lg:justify-start'>
                             <a href={logo.url}>
                                 <img
-                                    src={logo.src}
+                                    src={siteLogo}
                                     alt={logo.alt}
                                     title={logo.title}
                                     className='h-8'
