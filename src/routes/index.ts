@@ -16,12 +16,15 @@ import Pricing from '@/pages/public/Pricing';
 import HowItWorks from '@/pages/public/HowItWorks';
 import FAQs from '@/pages/public/FAQs';
 import Contact from '@/pages/public/Contact';
+import HomePage from '@/pages/public/HomePage';
 
 export const router = createBrowserRouter([
     {
         path: '/',
         Component: App,
+
         children: [
+            {index: true, Component: HomePage},
             {path: 'about', Component: About},
             {path: 'pricing', Component: Pricing},
             {path: 'how-it-works', Component: HowItWorks},
