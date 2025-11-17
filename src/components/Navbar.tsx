@@ -27,10 +27,9 @@ import {role} from '@/constants/role';
 
 export default function Navbar() {
     const dispatch = useAppDispatch();
-
     const {data} = useUserInfoQuery(undefined);
     const [logout] = useLogoutMutation();
-    console.log(data?.data);
+    // console.log(data?.data);
 
     const navLinks = [
         {href: '/', label: 'Home', role: 'PUBLIC'},

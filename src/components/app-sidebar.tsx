@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from 'react';
 import {
     Sidebar,
@@ -28,16 +29,48 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
                         <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
                         <SidebarGroupContent>
                             <SidebarMenu>
-                                {item.items.map((item) => (
-                                    <SidebarMenuItem key={item.title}>
-                                        <SidebarMenuButton
-                                            asChild
-                                            // isActive={item.isActive}
-                                        >
-                                            <a href={item.url}>{item.title}</a>
-                                        </SidebarMenuButton>
-                                    </SidebarMenuItem>
-                                ))}
+                                {item.items.map(
+                                    (item: {
+                                        title:
+                                            | boolean
+                                            | React.ReactElement<
+                                                  unknown,
+                                                  | string
+                                                  | React.JSXElementConstructor<any>
+                                              >
+                                            | Iterable<React.ReactNode>
+                                            | Promise<
+                                                  | string
+                                                  | number
+                                                  | bigint
+                                                  | boolean
+                                                  | React.ReactPortal
+                                                  | React.ReactElement<
+                                                        unknown,
+                                                        | string
+                                                        | React.JSXElementConstructor<any>
+                                                    >
+                                                  | Iterable<React.ReactNode>
+                                                  | null
+                                                  | undefined
+                                              >
+                                            | React.Key
+                                            | null
+                                            | undefined;
+                                        url: string | undefined;
+                                    }) => (
+                                        <SidebarMenuItem key={item.url}>
+                                            <SidebarMenuButton
+                                                asChild
+                                                // isActive={item.isActive}
+                                            >
+                                                <a href={item.url}>
+                                                    {item.title}
+                                                </a>
+                                            </SidebarMenuButton>
+                                        </SidebarMenuItem>
+                                    ),
+                                )}
                             </SidebarMenu>
                         </SidebarGroupContent>
                     </SidebarGroup>

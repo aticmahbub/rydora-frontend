@@ -21,7 +21,7 @@ export interface UserData {
     name: string;
     email: string;
     role: string;
-    NID: number;
+    NID: string;
     isDeleted: boolean;
     isActive: string;
     isVerified: boolean;

@@ -42,9 +42,7 @@ export const userApi = baseApi.injectEndpoints({
                 url: `/user/${userId}`,
                 method: 'GET',
             }),
-            providesTags: (result, error, userId) => [
-                {type: 'USER', id: userId},
-            ],
+            providesTags: [],
         }),
 
         // Get all users (for admin)
@@ -63,18 +61,12 @@ export const userApi = baseApi.injectEndpoints({
                 if (params.isActive !== undefined)
                     searchParams.append('isActive', params.isActive.toString());
 
-                return `/user?${searchParams.toString()}`;
+                return {
+                    url: `/user?${searchParams.toString()}`,
+                    method: 'GET',
+                };
             },
-            providesTags: (result) =>
-                result
-                    ? [
-                          ...result.data.users.map(({_id}) => ({
-                              type: 'USER' as const,
-                              id: _id,
-                          })),
-                          {type: 'USER', id: 'LIST'},
-                      ]
-                    : [{type: 'USER', id: 'LIST'}],
+            providesTags: [],
         }),
 
         // Update user
@@ -84,10 +76,7 @@ export const userApi = baseApi.injectEndpoints({
                 method: 'PATCH',
                 data: payload,
             }),
-            invalidatesTags: (result, error, {userId}) => [
-                {type: 'USER', id: userId},
-                {type: 'USER', id: 'LIST'},
-            ],
+            invalidatesTags: [],
             // Optimistic updates
             onQueryStarted: async (
                 {userId, payload},
@@ -119,10 +108,7 @@ export const userApi = baseApi.injectEndpoints({
                 url: `/user/${userId}`,
                 method: 'DELETE',
             }),
-            invalidatesTags: (result, error, userId) => [
-                {type: 'USER', id: userId},
-                {type: 'USER', id: 'LIST'},
-            ],
+            invalidatesTags: [],
         }),
 
         // Bulk update users
@@ -135,13 +121,7 @@ export const userApi = baseApi.injectEndpoints({
                 method: 'PATCH',
                 data: {userIds, payload},
             }),
-            invalidatesTags: (result, error, {userIds}) => [
-                ...userIds.map((userId) => ({
-                    type: 'USER' as const,
-                    id: userId,
-                })),
-                {type: 'USER', id: 'LIST'},
-            ],
+            invalidatesTags: [],
         }),
 
         // Update current user profile
