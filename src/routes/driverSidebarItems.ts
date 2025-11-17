@@ -8,7 +8,7 @@ import type {ISidebarItems} from '@/types';
 
 export const driverSidebarItems: ISidebarItems[] = [
     {
-        title: 'Driver sidebar',
+        title: 'Driver Features',
         items: [
             {
                 title: 'Find rides',

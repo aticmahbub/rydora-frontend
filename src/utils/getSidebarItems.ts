@@ -1,19 +1,24 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {role} from '@/constants/role';
 import {adminSidebarItems} from '@/routes/adminSidebarItems';
 import {driverSidebarItems} from '@/routes/driverSidebarItems';
 import {riderSidebarItems} from '@/routes/riderSidebarItems';
+import {rideSidebarItems} from '@/routes/rideSidebarItems';
+import {userSidebarItems} from '@/routes/userSidebarItems';
 import type {TRole} from '@/types';
 
 export const getSidebarItems = (userRole: TRole) => {
+    let items: any[] = [...userSidebarItems, ...rideSidebarItems];
+
     switch (userRole) {
         case role.SUPER_ADMIN:
-            return [...adminSidebarItems];
+            return (items = [...items, ...adminSidebarItems]);
         case role.ADMIN:
-            return [...adminSidebarItems];
+            return (items = [...items, ...adminSidebarItems]);
         case role.RIDER:
-            return [...riderSidebarItems];
+            return (items = [...items, ...riderSidebarItems]);
         case role.DRIVER:
-            return [...driverSidebarItems];
+            return (items = [...items, ...driverSidebarItems]);
 
         default:
             return [];

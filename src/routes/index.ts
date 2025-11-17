@@ -6,10 +6,8 @@ import VerifyPage from '@/pages/otp/VerifyOTPPage';
 import {createBrowserRouter} from 'react-router';
 import DashboardLayout from '@/layouts/DashboardLayout';
 import {generateRoutes} from '@/utils/generateRoutes';
-import {adminSidebarItems} from './adminSidebarItems';
-import {withAuth} from '@/utils/withAuth';
-import {riderSidebarItems} from './riderSidebarItems';
-import {driverSidebarItems} from './driverSidebarItems';
+// import {withAuth} from '@/utils/withAuth';
+
 import DriverRegistration from '@/pages/user/driverRegistration/DriverRegistration';
 import RideDetails from '@/pages/ride/RideDetails';
 import Pricing from '@/pages/public/Pricing';
@@ -21,6 +19,10 @@ import Analytics from '@/pages/Analytics';
 import RequestRide from '@/pages/ride/RequestRide';
 import FindRide from '@/pages/ride/FindRide';
 import Restriction from '@/pages/Restriction';
+import {riderSidebarItems} from './riderSidebarItems';
+import {rideSidebarItems} from './rideSidebarItems';
+import {userSidebarItems} from './userSidebarItems';
+import {driverSidebarItems} from './driverSidebarItems';
 
 export const router = createBrowserRouter([
     {
@@ -40,11 +42,7 @@ export const router = createBrowserRouter([
     {
         path: '/admin',
         Component: DashboardLayout,
-        children: [
-            {index: true, Component: Analytics},
-
-            ...generateRoutes(adminSidebarItems),
-        ],
+        children: [{index: true, Component: Analytics}],
     },
 
     {
@@ -53,23 +51,29 @@ export const router = createBrowserRouter([
         children: [
             {index: true, Component: RequestRide},
 
+            ...generateRoutes(userSidebarItems),
+            ...generateRoutes(rideSidebarItems),
             ...generateRoutes(riderSidebarItems),
+
             {path: 'ride/:rideId', Component: RideDetails},
         ],
     },
     {
         path: '/driver',
-        Component: withAuth(DashboardLayout, 'DRIVER'),
+        Component: DashboardLayout,
         children: [
             {index: true, Component: FindRide},
 
-            {path: 'ride/:rideId', Component: RideDetails},
+            ...generateRoutes(userSidebarItems),
             ...generateRoutes(driverSidebarItems),
+
+            {path: 'ride/:rideId', Component: RideDetails},
         ],
     },
 
     {path: '/login', Component: LoginPage},
     {path: '/registration', Component: RegistrationPage},
+    // {path: '/update-user', Component: UpdateUser},
     {path: '/driver-registration', Component: DriverRegistration},
     {path: '/verify', Component: VerifyPage},
     {path: '/restriction', Component: Restriction},

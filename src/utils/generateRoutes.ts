@@ -8,3 +8,20 @@ export const generateRoutes = (sidebarItems: ISidebarItems[]) => {
         })),
     );
 };
+
+// import type {ISidebarItems} from '@/types';
+
+// export const generateRoutes = (sidebarItems: ISidebarItems[]) => {
+//     const routes: any[] = [];
+
+//     sidebarItems.forEach((group) => {
+//         group.items.forEach((item) => {
+//             routes.push({
+//                 path: item.url.replace(/^\//, ''),
+//                 Component: item.component,
+//             });
+//         });
+//     });
+
+//     return routes;
+// };
