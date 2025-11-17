@@ -18,7 +18,7 @@ export interface UpdateUserPayload {
 
 export interface GetUsersResponse {
     users: UserData[];
-    meta?: {
+    meta: {
         total: number;
         page: number;
         totalPages: number;

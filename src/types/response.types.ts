@@ -1,7 +1,14 @@
+export interface UserResponseMetaData {
+    page: string;
+    total: string;
+    totalPages: string;
+}
+
 export interface Response<T> {
     statusCode: number;
     success: boolean;
     message: string;
+    meta?: UserResponseMetaData;
     data: T;
 }
 

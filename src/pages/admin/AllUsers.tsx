@@ -18,6 +18,7 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 import {Badge} from '@/components/ui/badge';
+import type {UserData} from '@/types';
 
 export default function AllUsers() {
     const [page, setPage] = useState(1);
@@ -33,11 +34,24 @@ export default function AllUsers() {
     });
 
     const responseData = data?.data;
-    const users = responseData || [];
-    const meta = data?.data.meta;
-    const total = meta?.total || 0;
-    const currentPage = meta?.page || 1;
-    const totalPages = meta?.totalPages || 1;
+
+    const users: UserData[] = Array.isArray(responseData)
+        ? responseData
+        : responseData?.users || [];
+
+    const meta = data?.meta || {total: 0, page: 1, totalPages: 1};
+    const total = Number(meta.total) || 0;
+    const currentPage = Number(meta.page) || 1;
+    const totalPages = Number(meta.totalPages) || 1;
+
+    const currentPageNum = Number(page);
+    const totalPagesNum = Number(totalPages);
+
+    console.log('Full API response:', data);
+    console.log('Response data:', responseData);
+    console.log('Users array:', users);
+    console.log('Meta:', meta);
+    console.log('Current page:', currentPageNum, 'Total pages:', totalPagesNum);
 
     if (isLoading) {
         return (
@@ -164,14 +178,14 @@ export default function AllUsers() {
                             </div>
                         ) : (
                             <div className='space-y-4'>
-                                {users?.map((user) => (
+                                {users.map((user) => (
                                     <div
                                         key={user._id}
                                         className='flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50'
                                     >
                                         <div className='flex items-center space-x-4 flex-1'>
                                             <div className='shrink-0'>
-                                                <div className='w-12 h-12 bg-linear-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center'>
+                                                <div className='w-12 h-12 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center'>
                                                     <span className='font-medium text-gray-700 text-lg'>
                                                         {user.name
                                                             ?.charAt(0)
@@ -197,11 +211,6 @@ export default function AllUsers() {
                                                 <p className='text-sm text-muted-foreground'>
                                                     {user.email}
                                                 </p>
-                                                {user.phone && (
-                                                    <p className='text-sm text-muted-foreground'>
-                                                        {user.phone}
-                                                    </p>
-                                                )}
                                                 <p className='text-xs text-muted-foreground mt-1'>
                                                     Joined:{' '}
                                                     {new Date(
@@ -256,7 +265,7 @@ export default function AllUsers() {
                 </Card>
 
                 {/* Pagination */}
-                {totalPages > 1 && (
+                {totalPagesNum > 1 && (
                     <Card>
                         <CardContent className='p-4'>
                             <div className='flex items-center justify-between'>
@@ -267,15 +276,21 @@ export default function AllUsers() {
                                 <div className='flex space-x-2'>
                                     <Button
                                         variant='outline'
-                                        disabled={page <= 1}
-                                        onClick={() => setPage(page - 1)}
+                                        disabled={currentPageNum <= 1}
+                                        onClick={() =>
+                                            setPage(currentPageNum - 1)
+                                        }
                                     >
                                         Previous
                                     </Button>
                                     <Button
                                         variant='outline'
-                                        disabled={page >= totalPages}
-                                        onClick={() => setPage(page + 1)}
+                                        disabled={
+                                            currentPageNum >= totalPagesNum
+                                        }
+                                        onClick={() =>
+                                            setPage(currentPageNum + 1)
+                                        }
                                     >
                                         Next
                                     </Button>

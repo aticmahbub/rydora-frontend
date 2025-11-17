@@ -8,12 +8,12 @@ export const adminSidebarItems: ISidebarItems[] = [
         items: [
             {
                 title: 'Analytics',
-                url: 'analytics',
+                url: '/admin/analytics',
                 component: Analytics,
             },
             {
                 title: 'All users',
-                url: 'all-users',
+                url: '/admin/all-users',
                 component: AllUsers,
             },
         ],

@@ -89,11 +89,7 @@ export function UpdateUserForm({
 
     const [updateUser, {isLoading: isUpdating}] = useUpdateUserMutation();
     const [updateProfile] = useUpdateProfileMutation();
-    const {
-        data: userData,
-        isLoading: isLoadingUser,
-        error,
-    } = useGetUserByIdQuery(userId!, {
+    const {data: userData, error} = useGetUserByIdQuery(userId!, {
         skip: !userId,
     });
 
@@ -118,11 +114,11 @@ export function UpdateUserForm({
             form.reset({
                 name: user.name || '',
                 email: user.email || '',
-                phone: user.phone || '',
+                // phone: user.phone || '',
                 role: user.role,
-                isActive: user.isActive,
+                // isActive: user.isActive,
                 isVerified: user.isVerified,
-                profileImage: user.profileImage || '',
+                // profileImage: user.profileImage || '',
                 password: '', // Don't pre-fill password
             });
         }
@@ -191,31 +187,31 @@ export function UpdateUserForm({
     };
 
     // Check if user has permission to edit this user
-    const canEditUser = () => {
-        if (!currentUser || !userData?.data) return false;
+    // const canEditUser = () => {
+    //     if (!currentUser || !userData?.data) return false;
 
-        // Use the correct ID field (check both userId and _id)
-        const currentUserId = currentUser.userId || currentUser._id;
-        const targetUserId = userData.data.userId || userData.data._id;
+    //     // Use the correct ID field (check both userId and _id)
+    //     const currentUserId = currentUser.userId || currentUser._id;
+    //     const targetUserId = userData.data._id;
 
-        // Super admin can edit anyone
-        if (currentUser.role === role.SUPER_ADMIN) return true;
+    //     // Super admin can edit anyone
+    //     if (currentUser.role === role.SUPER_ADMIN) return true;
 
-        // Admin can edit anyone except super admin
-        if (currentUser.role === role.ADMIN) {
-            return userData.data.role !== role.SUPER_ADMIN;
-        }
+    //     // Admin can edit anyone except super admin
+    //     if (currentUser.role === role.ADMIN) {
+    //         return userData.data.role !== role.SUPER_ADMIN;
+    //     }
 
-        // Drivers and riders can only edit themselves
-        if (
-            currentUser.role === role.DRIVER ||
-            currentUser.role === role.RIDER
-        ) {
-            return currentUserId === targetUserId;
-        }
+    //     // Drivers and riders can only edit themselves
+    //     if (
+    //         currentUser.role === role.DRIVER ||
+    //         currentUser.role === role.RIDER
+    //     ) {
+    //         return currentUserId === targetUserId;
+    //     }
 
-        return false;
-    };
+    //     return false;
+    // };
 
     const canEditRole = currentUser?.role === role.SUPER_ADMIN;
     const canEditStatus =
