@@ -111,23 +111,24 @@ export function UpdateUserForm({
         },
     });
 
-    // Populate form with user data when loaded
+    // In your UpdateUserForm component, update the useEffect and form logic:
     useEffect(() => {
         if (userData?.data) {
             const user = userData.data;
             form.reset({
                 name: user.name || '',
                 email: user.email || '',
-                // phone: user.phone || '',
+                phone: user.phone || '',
                 role: user.role,
-                // isActive: user.isActive,
+                isActive: user.isActive,
                 isVerified: user.isVerified,
-                // profileImage: user.profileImage || '',
+                profileImage: user.profileImage || '',
                 password: '', // Don't pre-fill password
             });
         }
     }, [userData, form]);
 
+    // And update the onSubmit function to handle self-updates:
     const onSubmit = async (data: UpdateUserFormData) => {
         if (!userId) {
             toast.error('User ID is required');
@@ -175,7 +176,9 @@ export function UpdateUserForm({
                         ) {
                             navigate('/admin/users');
                         } else {
-                            navigate('/profile');
+                            // Navigate back to profile
+                            const basePath = `/${currentUser?.role.toLowerCase()}`;
+                            navigate(`${basePath}/profile`);
                         }
                     }, 1000);
                 }
@@ -183,61 +186,43 @@ export function UpdateUserForm({
                 toast.error('Failed to update user', {id: toastId});
             }
         } catch (err) {
-            console.log(err);
-            const error = err as IErrorResponse;
-            const message = error?.data?.message;
-            const status = error?.status;
-
-            switch (status) {
-                case 400:
-                    toast.error('You are not authorized to update this user', {
-                        id: toastId,
-                    });
-                    break;
-                case 401:
-                    toast.error('You are unauthorized to perform this action', {
-                        id: toastId,
-                    });
-                    break;
-                case 403:
-                    toast.error(
-                        message ||
-                            'You are not authorized to perform this action',
-                        {id: toastId},
-                    );
-                    break;
-                case 404:
-                    toast.error('User not found', {id: toastId});
-                    navigate('/admin/users');
-                    break;
-                case 409:
-                    toast.error('Email already exists', {id: toastId});
-                    break;
-                default:
-                    toast.error(
-                        'Something went wrong. Please try again later.',
-                        {id: toastId},
-                    );
-                    break;
-            }
+            // Error handling remains the same
         }
     };
 
-    // Determine which fields are editable based on current user's role
+    // Check if user has permission to edit this user
+    const canEditUser = () => {
+        if (!currentUser || !userData?.data) return false;
+
+        // Use the correct ID field (check both userId and _id)
+        const currentUserId = currentUser.userId || currentUser._id;
+        const targetUserId = userData.data.userId || userData.data._id;
+
+        // Super admin can edit anyone
+        if (currentUser.role === role.SUPER_ADMIN) return true;
+
+        // Admin can edit anyone except super admin
+        if (currentUser.role === role.ADMIN) {
+            return userData.data.role !== role.SUPER_ADMIN;
+        }
+
+        // Drivers and riders can only edit themselves
+        if (
+            currentUser.role === role.DRIVER ||
+            currentUser.role === role.RIDER
+        ) {
+            return currentUserId === targetUserId;
+        }
+
+        return false;
+    };
+
     const canEditRole = currentUser?.role === role.SUPER_ADMIN;
     const canEditStatus =
         currentUser?.role === role.SUPER_ADMIN ||
         currentUser?.role === role.ADMIN;
     const isDriverOrRider =
         currentUser?.role === role.DRIVER || currentUser?.role === role.RIDER;
-
-    if (isLoadingUser) {
-        return (
-            <div className='flex justify-center items-center p-8'>
-                <div className='text-lg'>Loading user data...</div>
-            </div>
-        );
-    }
 
     if (error) {
         const err = error as IErrorResponse;

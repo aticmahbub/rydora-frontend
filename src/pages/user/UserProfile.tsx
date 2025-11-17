@@ -20,7 +20,7 @@ export default function UserProfile() {
     const {data: userData, isLoading, error} = useUserInfoQuery(undefined);
 
     const user = userData?.data;
-    console.log(user);
+    console.log('User data:', user);
 
     const getRoleBadgeVariant = (userRole: string) => {
         switch (userRole) {
@@ -59,6 +59,24 @@ export default function UserProfile() {
                 .join('')
                 .toUpperCase() || 'U'
         );
+    };
+
+    const handleEditProfile = () => {
+        if (!user) return;
+
+        // Don't pass the ID in the URL - the UpdateUser component will use the current user's ID
+        const userRole = user.role.toLowerCase();
+
+        // Navigate to the correct edit route based on user role
+        if (userRole === 'admin' || userRole === 'super_admin') {
+            navigate(`/admin/profile/edit`);
+        } else if (userRole === 'driver') {
+            navigate(`/driver/profile/edit`);
+        } else if (userRole === 'rider') {
+            navigate(`/rider/profile/edit`);
+        } else {
+            navigate('/profile/edit');
+        }
     };
 
     if (isLoading) {
@@ -121,7 +139,7 @@ export default function UserProfile() {
                             settings
                         </p>
                     </div>
-                    <Button onClick={() => navigate('/profile/edit')}>
+                    <Button onClick={handleEditProfile}>
                         <Edit className='h-4 w-4 mr-2' />
                         Edit Profile
                     </Button>
@@ -409,9 +427,7 @@ export default function UserProfile() {
                                     <Button
                                         variant='outline'
                                         className='justify-start h-auto py-3'
-                                        onClick={() =>
-                                            navigate('/profile/edit')
-                                        }
+                                        onClick={handleEditProfile}
                                     >
                                         <Edit className='h-4 w-4 mr-2' />
                                         <div className='text-left'>

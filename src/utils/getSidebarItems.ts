@@ -3,12 +3,11 @@ import {role} from '@/constants/role';
 import {adminSidebarItems} from '@/routes/adminSidebarItems';
 import {driverSidebarItems} from '@/routes/driverSidebarItems';
 import {riderSidebarItems} from '@/routes/riderSidebarItems';
-import {rideSidebarItems} from '@/routes/rideSidebarItems';
 import {userSidebarItems} from '@/routes/userSidebarItems';
 import type {TRole} from '@/types';
 
 export const getSidebarItems = (userRole: TRole) => {
-    let items: any[] = [...userSidebarItems, ...rideSidebarItems];
+    let items: any[] = [...userSidebarItems];
 
     switch (userRole) {
         case role.SUPER_ADMIN:

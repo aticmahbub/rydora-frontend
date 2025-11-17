@@ -1,4 +1,3 @@
-// src/context/LocationContext.tsx
 import {DEFAULT_COORDINATES} from '@/constants/defaultCoordinates';
 import {
     createContext,
@@ -54,6 +53,7 @@ export const LocationProvider = ({children}: {children: ReactNode}) => {
     );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useLocationContext = () => {
     const ctx = useContext(LocationContext);
     if (!ctx)

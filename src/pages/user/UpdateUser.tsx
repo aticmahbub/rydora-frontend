@@ -1,4 +1,4 @@
-import {useParams, useNavigate} from 'react-router';
+import {useNavigate} from 'react-router';
 import {
     Card,
     CardContent,
@@ -9,57 +9,69 @@ import {
 import {Button} from '@/components/ui/button';
 import {ArrowLeft} from 'lucide-react';
 import {UpdateUserForm} from '@/components/modules/user/UpdateUserForm';
-import {
-    useGetUserByIdQuery,
-    useUserInfoQuery,
-} from '@/redux/features/user/user.api';
+import {useGetUserByIdQuery} from '@/redux/features/user/user.api';
 import {role} from '@/constants/role';
+import {useUser} from '@/hooks/useUser';
 
 export default function UpdateUser() {
-    const {id} = useParams();
     const navigate = useNavigate();
-    const {data} = useUserInfoQuery(undefined);
-    const currentUser = data?.data;
-    console.log(currentUser);
-    console.log(id);
+    const {user: currentUser, isLoading: isUserLoading} = useUser();
+
+    const targetUserId = currentUser?._id;
+    console.log(targetUserId, 'tg');
 
     const {
         data: userData,
-        isLoading,
+        isLoading: isUserDataLoading,
         error,
-    } = useGetUserByIdQuery(id!, {
-        skip: !id,
+    } = useGetUserByIdQuery(targetUserId!, {
+        skip: !targetUserId,
     });
 
-    // Check if user has permission to edit this user
+    console.log('userData', userData);
+    console.log('currentUser:', currentUser);
+
     const canEditUser = () => {
         if (!currentUser || !userData?.data) return false;
 
-        // Super admin can edit anyone
-        if (currentUser.role === role.SUPER_ADMIN) return true;
+        const currentUserId = currentUser._id;
+        const targetUserId = userData.data._id;
 
-        // Admin can edit anyone except super admin
+        if (
+            currentUser.role === role.SUPER_ADMIN ||
+            currentUser.role === role.ADMIN
+        )
+            return true;
+
         if (currentUser.role === role.ADMIN) {
             return userData.data.role !== role.SUPER_ADMIN;
         }
 
-        // Drivers and riders can only edit themselves
         if (
             currentUser.role === role.DRIVER ||
             currentUser.role === role.RIDER
         ) {
-            return currentUser.userId === id;
+            return currentUserId === targetUserId;
         }
 
         return false;
     };
 
     const handleSuccess = () => {
-        // Optional: Add any success handling logic
-        console.log('User updated successfully');
+        setTimeout(() => {
+            if (
+                currentUser?.role === role.ADMIN ||
+                currentUser?.role === role.SUPER_ADMIN
+            ) {
+                navigate('/admin/users');
+            } else {
+                const basePath = `/${currentUser?.role.toLowerCase()}`;
+                navigate(`${basePath}/profile`);
+            }
+        }, 1000);
     };
 
-    if (isLoading) {
+    if (isUserLoading || isUserDataLoading) {
         return (
             <div className='container mx-auto py-8'>
                 <div className='max-w-2xl mx-auto'>
@@ -104,6 +116,31 @@ export default function UpdateUser() {
         );
     }
 
+    if (!currentUser) {
+        return (
+            <div className='container mx-auto py-8'>
+                <div className='max-w-2xl mx-auto'>
+                    <Card>
+                        <CardContent className='p-8'>
+                            <div className='text-center text-red-500'>
+                                <h2 className='text-xl font-semibold mb-2'>
+                                    Authentication Required
+                                </h2>
+                                <p>Please log in to access this page.</p>
+                                <Button
+                                    onClick={() => navigate('/login')}
+                                    className='mt-4'
+                                >
+                                    Go to Login
+                                </Button>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
+        );
+    }
+
     if (!canEditUser()) {
         return (
             <div className='container mx-auto py-8'>
@@ -131,6 +168,8 @@ export default function UpdateUser() {
         );
     }
 
+    const isEditingSelf = currentUser._id === targetUserId;
+
     return (
         <div className='container mx-auto py-8'>
             <div className='max-w-2xl mx-auto space-y-6'>
@@ -145,12 +184,10 @@ export default function UpdateUser() {
                     </Button>
                     <div>
                         <h1 className='text-3xl font-bold tracking-tight'>
-                            {currentUser?.userId === id
-                                ? 'Update Profile'
-                                : 'Update User'}
+                            {isEditingSelf ? 'Update Profile' : 'Update User'}
                         </h1>
                         <p className='text-muted-foreground'>
-                            {currentUser?.userId === id
+                            {isEditingSelf
                                 ? 'Update your personal information'
                                 : `Update information for ${
                                       userData?.data?.name || 'user'
@@ -198,7 +235,10 @@ export default function UpdateUser() {
                 {/* Update Form */}
                 <Card>
                     <CardContent className='p-6'>
-                        <UpdateUserForm userId={id} onSuccess={handleSuccess} />
+                        <UpdateUserForm
+                            userId={targetUserId}
+                            onSuccess={handleSuccess}
+                        />
                     </CardContent>
                 </Card>
             </div>

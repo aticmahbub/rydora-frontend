@@ -1,4 +1,3 @@
-import UpdateUser from '@/pages/user/UpdateUser';
 import UserProfile from '@/pages/user/UserProfile';
 import type {ISidebarItems} from '@/types';
 
@@ -10,11 +9,6 @@ export const userSidebarItems: ISidebarItems[] = [
                 title: 'User Profile',
                 url: 'profile',
                 component: UserProfile,
-            },
-            {
-                title: 'Update user',
-                url: 'update-user',
-                component: UpdateUser,
             },
         ],
     },

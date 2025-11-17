@@ -10,6 +10,6 @@ export default function VerifyOTPPage() {
         if (!email) {
             navigate('/');
         }
-    }, [email]);
+    }, [email, navigate]);
     return <div>VerifyPage</div>;
 }

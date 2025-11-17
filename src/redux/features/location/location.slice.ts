@@ -33,10 +33,8 @@ const setLocationWithGeocoding = createAsyncThunk(
         }: {coordinates: ICoordinates; type: 'pickup' | 'dropoff'},
         {dispatch},
     ) => {
-        // Get address from coordinates
         const address = await getAddressFromCoordinates(coordinates);
 
-        // Create geo point with address
         const geoPoint = coordinatesToGeoPoint(coordinates, address);
 
         // Dispatch appropriate action based on type

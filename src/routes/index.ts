@@ -6,8 +6,6 @@ import VerifyPage from '@/pages/otp/VerifyOTPPage';
 import {createBrowserRouter} from 'react-router';
 import DashboardLayout from '@/layouts/DashboardLayout';
 import {generateRoutes} from '@/utils/generateRoutes';
-// import {withAuth} from '@/utils/withAuth';
-
 import DriverRegistration from '@/pages/user/driverRegistration/DriverRegistration';
 import RideDetails from '@/pages/ride/RideDetails';
 import Pricing from '@/pages/public/Pricing';
@@ -20,18 +18,18 @@ import RequestRide from '@/pages/ride/RequestRide';
 import FindRide from '@/pages/ride/FindRide';
 import Restriction from '@/pages/Restriction';
 import {riderSidebarItems} from './riderSidebarItems';
-import {rideSidebarItems} from './rideSidebarItems';
 import {userSidebarItems} from './userSidebarItems';
 import {driverSidebarItems} from './driverSidebarItems';
+import {adminSidebarItems} from './adminSidebarItems';
+import UserProfile from '@/pages/user/UserProfile';
+import UpdateUser from '@/pages/user/UpdateUser';
 
 export const router = createBrowserRouter([
     {
         path: '/',
         Component: App,
-
         children: [
             {index: true, Component: HomePage},
-
             {path: 'about', Component: About},
             {path: 'pricing', Component: Pricing},
             {path: 'how-it-works', Component: HowItWorks},
@@ -42,20 +40,26 @@ export const router = createBrowserRouter([
     {
         path: '/admin',
         Component: DashboardLayout,
-        children: [{index: true, Component: Analytics}],
-    },
+        children: [
+            {index: true, Component: Analytics},
+            ...generateRoutes(userSidebarItems),
+            ...generateRoutes(adminSidebarItems),
 
+            {path: 'profile', Component: UserProfile},
+            {path: 'profile/edit', Component: UpdateUser},
+            {path: 'user/update/:id', Component: UpdateUser},
+        ],
+    },
     {
         path: '/rider',
         Component: DashboardLayout,
         children: [
             {index: true, Component: RequestRide},
-
             ...generateRoutes(userSidebarItems),
-            ...generateRoutes(rideSidebarItems),
             ...generateRoutes(riderSidebarItems),
-
             {path: 'ride/:rideId', Component: RideDetails},
+            {path: 'profile', Component: UserProfile},
+            {path: 'profile/edit', Component: UpdateUser},
         ],
     },
     {
@@ -63,17 +67,16 @@ export const router = createBrowserRouter([
         Component: DashboardLayout,
         children: [
             {index: true, Component: FindRide},
-
             ...generateRoutes(userSidebarItems),
             ...generateRoutes(driverSidebarItems),
-
             {path: 'ride/:rideId', Component: RideDetails},
+
+            {path: 'profile', Component: UserProfile},
+            {path: 'profile/edit', Component: UpdateUser},
         ],
     },
-
     {path: '/login', Component: LoginPage},
     {path: '/registration', Component: RegistrationPage},
-    // {path: '/update-user', Component: UpdateUser},
     {path: '/driver-registration', Component: DriverRegistration},
     {path: '/verify', Component: VerifyPage},
     {path: '/restriction', Component: Restriction},

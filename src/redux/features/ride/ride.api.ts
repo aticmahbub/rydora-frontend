@@ -80,19 +80,7 @@ export const rideApi = baseApi.injectEndpoints({
                 url: `/ride/${rideId}`,
                 method: 'GET',
             }),
-
-            // providesTags: (result, error, rideId) => [
-            //     {type: 'RIDE_HISTORY', id: rideId},
-            // ],
         }),
-
-        // getRideStats: builder.query({
-        //     query: () => ({
-        //         url: '/ride/stats',
-        //         method: 'GET',
-        //     }),
-        //     providesTags: ['RIDE_STATS'],
-        // }),
     }),
 });
 
@@ -100,6 +88,5 @@ export const {
     useRequestRideMutation,
     useFindRideQuery,
     useGetRideHistoryQuery,
-    // useGetRideStatsQuery,
     useGetRideDetailsQuery,
 } = rideApi;

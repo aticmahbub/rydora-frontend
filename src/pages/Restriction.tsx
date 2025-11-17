@@ -27,11 +27,9 @@ export default function Restriction() {
         message: '',
     });
 
-    // Optional: Redirect if no state was passed
     useEffect(() => {
         if (!location.state) {
             console.warn('No state passed to Restriction component');
-            // You can redirect to home or show default message
             // navigate('/');
         }
     }, [location.state, navigate]);
@@ -46,7 +44,6 @@ export default function Restriction() {
 
         console.log('Form submitted:', formData);
 
-        // Simulate API call
         setTimeout(() => {
             toast.success('Message sent successfully!', {id: toastId});
         }, 1000);

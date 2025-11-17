@@ -16,9 +16,18 @@ export interface UpdateUserPayload {
     payload: UpdateUserFormData;
 }
 
+export interface GetUsersResponse {
+    users: UserData[];
+    meta?: {
+        total: number;
+        page: number;
+        totalPages: number;
+    };
+}
+
 export const userApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        // Register new user
+        // register new user
         register: builder.mutation<Response<UserData>, RegistrationFormData>({
             query: (userInfo) => ({
                 url: '/user/register',
@@ -27,7 +36,7 @@ export const userApi = baseApi.injectEndpoints({
             }),
         }),
 
-        // Get current user info
+        // get current user info
         userInfo: builder.query({
             query: () => ({
                 url: '/user/info',
@@ -36,7 +45,7 @@ export const userApi = baseApi.injectEndpoints({
             providesTags: ['USER'],
         }),
 
-        // Get user info by ID
+        // get user info by ID
         getUserById: builder.query<Response<UserData>, string>({
             query: (userId) => ({
                 url: `/user/${userId}`,
@@ -45,31 +54,23 @@ export const userApi = baseApi.injectEndpoints({
             providesTags: [],
         }),
 
-        // Get all users (for admin)
-        getUsers: builder.query<
-            Response<{users: UserData[]; total: number; page: number}>,
-            GetUsersParams
-        >({
-            query: (params) => {
-                const searchParams = new URLSearchParams();
-                if (params.page)
-                    searchParams.append('page', params.page.toString());
-                if (params.limit)
-                    searchParams.append('limit', params.limit.toString());
-                if (params.search) searchParams.append('search', params.search);
-                if (params.role) searchParams.append('role', params.role);
-                if (params.isActive !== undefined)
-                    searchParams.append('isActive', params.isActive.toString());
-
-                return {
-                    url: `/user?${searchParams.toString()}`,
-                    method: 'GET',
-                };
-            },
+        // et all users (for admin)
+        getUsers: builder.query<Response<GetUsersResponse>, GetUsersParams>({
+            query: (params = {}) => ({
+                url: '/user',
+                method: 'GET',
+                params: {
+                    page: params.page || 1,
+                    limit: params.limit || 10,
+                    search: params.search,
+                    role: params.role,
+                    isActive: params.isActive,
+                },
+            }),
             providesTags: [],
         }),
 
-        // Update user
+        // update user
         updateUser: builder.mutation<Response<UserData>, UpdateUserPayload>({
             query: ({userId, payload}) => ({
                 url: `/user/${userId}`,
@@ -77,7 +78,7 @@ export const userApi = baseApi.injectEndpoints({
                 data: payload,
             }),
             invalidatesTags: [],
-            // Optimistic updates
+
             onQueryStarted: async (
                 {userId, payload},
                 {dispatch, queryFulfilled},
@@ -102,7 +103,7 @@ export const userApi = baseApi.injectEndpoints({
             },
         }),
 
-        // Delete user (soft delete)
+        // Delete user
         deleteUser: builder.mutation<Response<null>, string>({
             query: (userId) => ({
                 url: `/user/${userId}`,

@@ -6,15 +6,20 @@ import type {ReactNode} from 'react';
 export interface UserContextType {
     user: any | null;
     isLoading: boolean;
+    refetchUser: () => void;
 }
 
 export const UserProvider = ({children}: {children: ReactNode}) => {
-    const {data, isLoading} = useUserInfoQuery(undefined);
+    const {data, isLoading, refetch} = useUserInfoQuery(undefined);
 
     const user = data?.data;
 
+    const refetchUser = () => {
+        refetch();
+    };
+
     return (
-        <UserContext.Provider value={{user, isLoading}}>
+        <UserContext.Provider value={{user, isLoading, refetchUser}}>
             {children}
         </UserContext.Provider>
     );
